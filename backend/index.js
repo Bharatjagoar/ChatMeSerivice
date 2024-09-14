@@ -1,14 +1,16 @@
+require("dotenv").config()
 const express = require("express");
 const app = express();
 const http = require("http");
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 const socketio = require("socket.io");
+const bodyParser = require("body-parser")
 const cors = require('cors');
 const port = process.env.PORT || 5000;
 const path = require("path")
+const mongodb = require("./config/mongoose")
 
-
-
+console.log(process.env.keys)
 
 
 app.use(cors({
@@ -17,7 +19,7 @@ app.use(cors({
     credentials: false, // Allow credentials such as cookies to be sent
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express.json())
 // Create the HTTP server and attach Socket.IO
 const server = http.createServer(app);
 const io = socketio(server, {
@@ -27,6 +29,9 @@ const io = socketio(server, {
         credentials: true,
     }
 });
+
+
+
 
 // Define a route to test the server
 // app.get("/", (req, res) => {
@@ -55,6 +60,7 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(__dirname, 'dist', 'index.html'));
     });
 }
+app.use("/",require("./Route/index"))
 // Start the server
 server.listen(port, () => {
     console.log(`Server running on port ${port}`);

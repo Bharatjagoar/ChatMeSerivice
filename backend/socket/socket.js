@@ -11,6 +11,11 @@ module.exports = (socket) => {
         console.log(data)
         socket.broadcast.emit("setNewMessaging", data.mesageString)
     })
+
+    socket.on("disconnect",(data)=>{
+        console.log("disconnected now",socket.id)
+
+    })
 }
 
 
