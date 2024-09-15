@@ -35,7 +35,7 @@ app.use(expressSession({
     cookie: {
         httpOnly: true,
         secure: false,  // true in production with HTTPS
-        maxAge: 1000 * 60 * 60 * 24 // 24 hours
+        maxAge: 1000 * 24 * 60 * 60 // 24 hours
     }
 }));
 passportConfig.initailizingPassport(passport)
@@ -82,7 +82,7 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(__dirname, 'dist', 'index.html'));
     });
 }
-app.use("/",require("./Route/index"))
+app.use("/", require("./Route/index"))
 // Start the server
 server.listen(port, () => {
     console.log(`Server running on port ${port}`);

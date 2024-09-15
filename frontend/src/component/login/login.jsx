@@ -18,12 +18,20 @@ const Login = () => {
         console.log("clicked22222222222222")
         try {
             const respo = await instance.get("/test")
-            console.log(respo,"respo")
+            console.log(respo.data.loggedin,"respo")
         } catch (error) {
             console.log(error,"errr")
         }
     }
-
+    const btnclicked3 = async ()=>{
+        console.log("clicked22222222222222")
+        try {
+            const respo = await instance.post("/logout")
+            console.log(respo.data.loggedin,"respo")
+        } catch (error) {
+            console.log(error,"errr")
+        }
+    }
 
     return <div>
         <h1>Login</h1>
@@ -31,6 +39,9 @@ const Login = () => {
         <input type="text" placeholder='password' onChange={(e)=>{setpassword(e.target.value)}}/>
         <button onClick={()=>{btnclicked()}}>submit</button>
         <button onClick={()=>{btnclicked2()}}>submitthis that </button>
+        <div>
+        <button onClick={()=>{btnclicked3()}}>logout</button>
+        </div>
     </div>
 }
 
