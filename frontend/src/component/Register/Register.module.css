@@ -1,24 +1,85 @@
-.mainContainer{
-    background-color: yellow;
-    width: 50%;
+/* Main container to center the form and apply padding */
+.mainContainer {
     display: flex;
-    margin: 0 auto;
-    justify-content: space-evenly;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f0f0f0; /* Light gray background */
+    font-family: Arial, sans-serif;
+}
+
+/* Logo section */
+.logoDiv {
+    margin-bottom: 20px;
+    display: flex;
     align-items: center;
 }
-.logoDiv{
-    background-color: hotpink;
+.logoDiv>h1{
+    color: rgb(24, 157, 14);
+    /* background-color: aqua; */
+
 }
-.logos{
-    height: 250px;
-    width: 250px;
+/* Styling the logo image */
+.logos {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
 }
-.registerationForm{
-    background-color: rgb(46, 74, 147);
+
+/* The form wrapper */
+.registerationForm {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for form */
     width: 100%;
+    max-width: 400px; /* Limit the width on larger screens */
+    text-align: center;
 }
-.userName{
-    /* color: ; */
-    display: block;
-    margin: 0 auto;
+
+/* Styling for input fields */
+.userName {
+    width: 90%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    box-shadow: inset 0 1px 20px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+/* Input field focus state */
+.userName:focus {
+    border-color: #25d366; /* WhatsApp green on focus */
+}
+
+/* Styling for the button */
+button {
+    width: 100%;
+    padding: 12px 15px;
+    margin-top: 15px;
+    background-color: #25d366; /* WhatsApp green */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+/* Button hover state */
+button:hover {
+    background-color: #1ebe5c;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 600px) {
+    .registerationForm {
+        padding: 15px;
+        width: 90%;
+    }
 }

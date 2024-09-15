@@ -1,0 +1,94 @@
+/* Main login container */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Center the form with a background */
+.loginContainer {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Heading style */
+.h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #075e54; /* WhatsApp dark green */
+    font-weight: bold;
+}
+
+/* Input field style */
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+/* Focus state for input */
+input:focus {
+    border-color: #25d366; /* WhatsApp light green */
+}
+
+/* Submit and other buttons */
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #25d366; /* WhatsApp green */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Button hover state */
+button:hover {
+    background-color: #1ebe5c;
+}
+
+/* Styling for the icons */
+.iconContainer {
+    margin: 20px 0;
+}
+
+.iconContainer h1 {
+    font-size: 20px;
+    color: #075e54; /* WhatsApp dark green */
+    margin-bottom: 10px;
+}
+
+/* FontAwesome icon size and color */
+.iconContainer .fa-whatsapp {
+    font-size: 80px;
+    color: #25d366; /* WhatsApp green */
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .loginContainer {
+        padding: 20px;
+    }
+    
+    .h1 {
+        font-size: 24px;
+    }
+}
