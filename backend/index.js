@@ -5,21 +5,43 @@ const http = require("http");
 // const bodyParser = require("body-parser");
 const socketio = require("socket.io");
 const bodyParser = require("body-parser")
+const expressSession = require("express-session")
+const MongoStore = require('connect-mongo');
 const cors = require('cors');
 const port = process.env.PORT || 5000;
 const path = require("path")
+const passport = require("passport")
+const passportConfig = require("./config/passportConfig")
 const mongodb = require("./config/mongoose")
 
-console.log(process.env.keys)
+// console.log(process.env.keys)
 
 
 app.use(cors({
-    origin: "*", // Allow only your frontend origin
-    methods: ["GET", "POST"], // Allow specific HTTP methods
-    credentials: false, // Allow credentials such as cookies to be sent
+    origin: "http://localhost:3000",  // Replace with your frontend's origin
+    methods: ["GET", "POST"],  // Allow specific HTTP methods
+    credentials: true,  // Allow credentials (cookies, authorization headers, etc.) to be sent
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json())
+app.use(expressSession({
+    secret: "secret",
+    saveUninitialized: false,
+    resave: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MongodbURL,
+        collectionName: 'sessions'
+    }),
+    cookie: {
+        httpOnly: true,
+        secure: false,  // true in production with HTTPS
+        maxAge: 1000 * 60 * 60 * 24 // 24 hours
+    }
+}));
+passportConfig.initailizingPassport(passport)
+app.use(passport.initialize())
+app.use(passport.session())
+
 // Create the HTTP server and attach Socket.IO
 const server = http.createServer(app);
 const io = socketio(server, {

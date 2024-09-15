@@ -4,6 +4,7 @@ import App from './App.jsx'; // Import the App component
 import Tester from "./component/instance.jsx";
 import Message from "./component/message/mesage.jsx";
 import Register from "./component/Register/Register.jsx";
+import Login from "./component/login/login.jsx";
 const Router = () => {
     return (
         <>
@@ -14,6 +15,7 @@ const Router = () => {
                     <Route path="/message" element={<Message />} />
                     <Route path="/Register" element={<Register/>}/>
                     <Route path="*" element={<h1>path not found</h1>}/>
+                    <Route path="/login" element={<Login />} />
         </Routes>
             </BrowserRouter>
         </>

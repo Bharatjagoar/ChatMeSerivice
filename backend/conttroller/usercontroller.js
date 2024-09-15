@@ -32,3 +32,8 @@ module.exports.checkUserName = async (req,res)=>{
     }
     // res.status(200).send({message:"succesfull",data:null})
 }
+
+module.exports.login=(req,res)=>{
+    console.log("hello world")
+    res.send()
+}
