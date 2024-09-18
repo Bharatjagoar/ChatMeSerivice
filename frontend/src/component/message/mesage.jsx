@@ -1,31 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { socket } from "../../socket/socket";
+import React from "react";
 
-const Message = () => {
-    const [message, setmessage] = useState([]);
-    const [mesageString, setmesageString] = useState();
-    useEffect(() => {
-        console.log("hellow from useEffect")
-        socket.on("setNewMessaging", (data) => { 
-            console.log(data) 
-            setmessage(prev=>[...prev,data])
-        })
-    }, [socket])
-    console.log("hello world ")
-    const btnClicked = () => {
-        setmessage(prev => [...prev, mesageString])
-        socket.emit("newMessage", { mesageString })
-    }
+
+const Message = ()=>{
+    
     return <>
-        <p>meesages are here :-</p>
-        <input type="text" onChange={(e) => { setmesageString(e.target.value) }} />
-        <button onClick={() => { btnClicked() }}>send</button>
-
-        <div >
-                {message?.map((item, index) => (
-                    <h6 key={index}>{item}</h6>
-                ))}
-        </div>
+        <h1>hello from Messages</h1>
     </>
 }
 

@@ -5,8 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import loginCss from "./login.module.css"; // Import the CSS module
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux"
+import { LoggedIn } from "../../../redux/reducer"
 
 const Login = () => {
+    const dispatch = useDispatch();
+    const nav = useNavigate()
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -14,6 +19,8 @@ const Login = () => {
         try {
             const respo = await instance.post("/login", { username, password });
             console.log(respo, "respo");
+            dispatch(LoggedIn(true))
+            nav("/Chatting")
         } catch (error) {
             console.log(error, "errr");
         }
@@ -53,6 +60,7 @@ const Login = () => {
                 />
                 <button onClick={btnClicked}>Submit</button>
                 {/* <button onClick={btnClicked2}>Check Login Status</button> */}
+                
                 <div className={loginCss.iconContainer}>
                     {/* <h1>Icons</h1> */}
                     {/* <FontAwesomeIcon icon={faWhatsapp} size="5x" /> */}

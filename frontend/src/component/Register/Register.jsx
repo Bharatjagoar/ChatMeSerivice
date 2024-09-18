@@ -36,7 +36,7 @@ const Register = () => {
                 });
                 console.log(data)
                 data = data?.data?.data;
-                
+
                 setisausername(data);
             }
         } catch (error) {
@@ -108,7 +108,7 @@ const Register = () => {
                 <button onClick={btnclicked} className={RegisterCss.submitButton}>
                     Submit
                 </button>
-                
+                <button onClick={(e)=>{nav("/Chatting")}}>chatting</button>
             </div>
         </div>
     );
