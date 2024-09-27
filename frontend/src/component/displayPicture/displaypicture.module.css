@@ -1,0 +1,14 @@
+.MainDP{
+    background-color: yellow;
+    border-radius: 50%;
+    height: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+}
+.MainDP>img{
+    height: 100%;
+    width: 100%;
+}
+.MainDP>p{
+    color: yellow;
+}

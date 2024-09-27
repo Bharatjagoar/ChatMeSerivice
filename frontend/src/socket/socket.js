@@ -1,8 +1,9 @@
 // socket.js
 import { io } from "socket.io-client";
+console.log("from socket");
 
 const socket = io("http://localhost:5000/", {
-    autoConnect: true,
+    autoConnect: false,
     reconnection: true,          // Auto-reconnect on failure
     reconnectionAttempts: 10,     // Try 10 times before giving up
     reconnectionDelay: 500,       // Wait 500ms before first reconnection attempt

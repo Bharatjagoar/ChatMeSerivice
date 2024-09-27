@@ -1,4 +1,5 @@
-import React from "react";
+import React ,{useEffect}from "react";
+import { socket } from "./socket/socket.js";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import App from './App.jsx'; // Import the App component
 import Tester from "./component/instance.jsx";
@@ -11,6 +12,11 @@ import { useDispatch, useSelector } from "react-redux"
 
 
 const Router = () => {
+    useEffect(()=>{
+        socket.on("bharat",(data)=>{
+            console.log(data)
+        })
+    },[])
     const isLogin = useSelector((state)=>{
         console.log(state)
         return state.WhatsApp.IsLogin}

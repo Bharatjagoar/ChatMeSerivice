@@ -11,16 +11,17 @@ Router.get("/Create", (req, res) => {
 })
 Router.post("/getrespo", UserController.CreateUser);
 Router.post("/checkUserName", UserController.checkUserName)
+Router.post("/SearchString",UserController.Searchstring)
 
 
 Router.post("/login", passport.authenticate("local"), (req, res) => {
     console.log("helllo wofdsafd  fda ndfsa", req.user, req.isAuthenticated())
-    res.status(200).send({ mes: "from helfdsa" })
+    res.status(200).send({ mes: req.user.id })
 })
 Router.get("/test", (req, res) => {
     console.log("from test", req.isAuthenticated(),req.user)
-    req.logOut()
-    res.status(200).send({message:"successful",data:req.isAuthenticated()})
+    
+    res.status(200).send({message:"successful",data:req.isAuthenticated(),user:req?.user?.id})
 })
 Router.post("/logout", (req, res) => {
     console.log("from logout")

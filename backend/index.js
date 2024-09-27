@@ -69,7 +69,7 @@ io.on("connection", (socket) => {
     // console.log(socket.handshake)
     // console.log("Socket connection established",socket.id);
     // Emit a confirmation message to the client
-    require("./socket/socket")(socket)
+    require("./socket/socket")(socket,io)
     // socket.on("clickme",()=>{
     //     console.log("hedsafdfadaf")
     // })

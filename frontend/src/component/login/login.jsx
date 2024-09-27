@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import instance from "../../../axios/axiosInstance";
+import { socket } from '../../socket/socket';
 import logo from "../../../images/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
@@ -7,7 +8,7 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons";
 import loginCss from "./login.module.css"; // Import the CSS module
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux"
-import { LoggedIn } from "../../../redux/reducer"
+import { LoggedIn,setUserId } from "../../../redux/reducer"
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -17,9 +18,13 @@ const Login = () => {
 
     const btnClicked = async () => {
         try {
-            const respo = await instance.post("/login", { username, password });
-            console.log(respo, "respo");
+            const {data} = await instance.post("/login", { username, password });
+            console.log(data, "respo");
+            
             dispatch(LoggedIn(true))
+            dispatch(setUserId(data.mes))
+            socket.io.opts.query=data.mes
+            socket.connect()
             nav("/Chatting")
         } catch (error) {
             console.log(error, "errr");
@@ -45,7 +50,8 @@ const Login = () => {
     };
 
     return (
-        <div className={loginCss.body}>
+        <div className={loginCss.body}> 
+        fdas
             <div className={loginCss.loginContainer}>
                 <h1 className={loginCss.h1}>Login</h1>
                 <input

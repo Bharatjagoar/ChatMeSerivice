@@ -14,7 +14,8 @@ async function LoginStatus(){
 const counterSlice = createSlice({
     name: 'WhatsApp',
     initialState: {
-        IsLogin: await LoginStatus()
+        IsLogin: await LoginStatus(),
+        userId:null
     },
     reducers: {
         LoggedIn: (state, action) => {
@@ -22,9 +23,12 @@ const counterSlice = createSlice({
         },
         Logout: (state, action) => {
             state.IsLogin = action.payload
+        },
+        setUserId:(state,action)=>{
+            state.userId=action.payload
         }
     },
 })
 
-export const { LoggedIn , Logout } = counterSlice.actions
+export const { LoggedIn , Logout, setUserId } = counterSlice.actions
 export default counterSlice.reducer

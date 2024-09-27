@@ -4,7 +4,8 @@ import { faWhatsapp } from "@fortawesome/free-brands-svg-icons"
 import { faBars, faComment, faPhone ,faCircleNotch} from "@fortawesome/free-solid-svg-icons"
 import MessageCSS from "./messages.module.css"
 import { icon } from "@fortawesome/fontawesome-svg-core";
-
+import Contacts from "./MainScreen/Contacts";
+import {motion} from "framer-motion"
 
 const Message = () => {
     const arr = [
@@ -33,14 +34,13 @@ const Message = () => {
                 <FontAwesomeIcon icon={faWhatsapp} color={"rgb(36, 189, 93)"} />
                 <p>WhatsApp</p>
             </div>
+            <div className={MessageCSS.Maincontainer}>
             <div className={MessageCSS.leftMenu}>
-            <div className={MessageCSS.topleft}>
-            </div>
             {
                 arr.map((index,key)=>(
-                    <div className={MessageCSS.leftMenutop}>
+                    <motion.div key={key} whileHover={{backgroundColor:"rgb(35, 39, 46)"}} className={MessageCSS.leftMenutop}>
                         <FontAwesomeIcon icon={index.icon}/>
-                    </div>
+                    </motion.div>
                     
                 ))
             }
@@ -51,7 +51,13 @@ const Message = () => {
             </div>
 
             {/* <h1>hello from Messages</h1> */}
-        </div>
+            <div className={MessageCSS.chatsContainer}>
+                <Contacts/>
+            </div>
+            
+            </div>
+            
+       </div>
 
     </>
 }

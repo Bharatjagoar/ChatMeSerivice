@@ -1,0 +1,105 @@
+.ChatandMessage{
+    /* background-color: lightcoral; */
+    background-color: rgb(44, 44, 44);
+    border-top-left-radius: 5px;
+    overflow: hidden;
+    display: flex;
+}
+.Contacts{
+    /* background-color: darkgreen; */
+    color: rgb(255, 255, 255);
+    min-width:250px;
+    height: calc(100vh - 30px);
+    /* flex-grow: 100;
+    flex-basis: 0; */
+    border-right: 2px rgb(32, 32, 32) solid;
+    /* margin-right:2px ; */
+    padding:5px 10px 5px;
+}
+.Contacts>h2{
+    display: inline-block;
+    padding: 10px;
+    /* background-color: blue; */
+}
+.book{
+    margin: 11px;
+    font-size: 1.3rem;
+    float: right;
+}
+.mainchatscreens {
+    background-color: rgb(44, 44, 44);
+    color: rgb(255, 255, 255);
+    min-width: 250px;
+    width: 100%;
+    height: calc(100vh - 30px); /* This is fine */
+    flex-grow: 45;
+    flex-basis: 0;
+    border: 2px green solid;
+    position: relative;
+    overflow-y: hidden; /* Keep this */
+    display: flex; /* Make sure to use flex */
+    flex-direction: column; /* Add this */
+}
+.Searcg{
+    display: block;
+    padding: 0px 5px;
+    /* background-color: blue; */
+    /* height: 30px; */
+}
+.Searcg>input{
+    color: rgb(241, 241, 241);
+    font-size: 1rem;
+    border-radius: 5px;
+    /* font-family: sans-serif; */
+    /* border: none; */
+    border-bottom: rgb(29, 170, 97) 2px solid;
+    margin-bottom: 10px;
+    height: 30px;
+}
+.Searcg>input::placeholder{
+    color: rgb(178, 178, 178);
+    font: size 0.8rem ;
+}
+.ChatsfromSearch{
+    height: 60px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.ChatsfromSearch>span{
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+.Navbar{
+    /* background-color: yellow; */
+    border: 2px solid ;
+    max-height: 60px;
+    min-height: 60px;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px;
+    flex-grow: 1;
+}
+.scrollloader {
+    flex-grow: 1; /* Take up remaining height */
+    width: 100%;
+    background-color: grey;
+    overflow-y: scroll;
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+}
+.dpContainer{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    /* margin-left: 10px; */
+}
+.dpContainer>p{
+    color: yellow;
+    display: inline-block;
+    position: relative;
+    padding-left: 10px;   
+    
+}
