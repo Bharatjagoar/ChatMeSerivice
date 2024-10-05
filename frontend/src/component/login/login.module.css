@@ -47,7 +47,7 @@ input:focus {
 }
 
 /* Submit and other buttons */
-button {
+.loginContainer>button {
     width: 100%;
     padding: 10px;
     margin-top: 10px;
@@ -61,7 +61,7 @@ button {
 }
 
 /* Button hover state */
-button:hover {
+.loginContainer>button:hover {
     background-color: #1ebe5c;
 }
 

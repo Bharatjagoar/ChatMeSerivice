@@ -1,5 +1,5 @@
 import React from "react";
-import { socket } from "../socket/socket";
+// import { socket } from "../socket/socket";
 
 
 const Tester = () => {

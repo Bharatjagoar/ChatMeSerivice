@@ -1,5 +1,5 @@
-import React ,{useEffect}from "react";
-import { socket } from "./socket/socket.js";
+import React, { useEffect } from "react";
+import getSocket from "./socket/socket.js";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import App from './App.jsx'; // Import the App component
 import Tester from "./component/instance.jsx";
@@ -12,27 +12,34 @@ import { useDispatch, useSelector } from "react-redux"
 
 
 const Router = () => {
-    useEffect(()=>{
-        socket.on("bharat",(data)=>{
+    const socket = getSocket();
+    useEffect(() => {
+        console.log("from the Router component")
+        socket.on("bharat", (data) => {
             console.log(data)
         })
-    },[])
-    const isLogin = useSelector((state)=>{
+        return ()=>{
+            console.log("from unmount")
+        }
+    }, [])
+
+    const isLogin = useSelector((state) => {
         console.log(state)
-        return state.WhatsApp.IsLogin}
+        return state.WhatsApp.IsLogin
+    }
     )
 
     return (
         <>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<Navigate to={"/register"}/>} />
+                    <Route path="/" element={<Navigate to={"/register"} />} />
                     <Route path="/Tester" element={<Tester />} />
-                    <Route path="/message" element={<Message />} />
-                    <Route path="/Register" element={<Register/>}/>
-                    <Route path="*" element={<h1>path not found</h1>}/>
+                    <Route path="/message" element={isLogin ? <Message/> : <Navigate to={"/login"} />} />
+                    <Route path="/Register" element={<Register />} />
+                    <Route path="*" element={<h1>path not found</h1>} />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/Chatting" element = {isLogin?<h1>from chatting screen </h1>:<Navigate to={"/register"}/>}/>
+                    <Route path="/Chatting" element={isLogin ? <h1>from chatting screen </h1> : <Navigate to={"/login"} />} />
                 </Routes>
             </BrowserRouter>
         </>

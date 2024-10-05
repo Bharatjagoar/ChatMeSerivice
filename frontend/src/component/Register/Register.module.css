@@ -57,7 +57,7 @@
 }
 
 /* Styling for the button */
-button {
+.registerationForm>button {
     width: 100%;
     padding: 12px 15px;
     margin-top: 15px;
@@ -72,7 +72,7 @@ button {
 }
 
 /* Button hover state */
-button:hover {
+.registerationForm>button:hover{
     background-color: #1ebe5c;
 }
 

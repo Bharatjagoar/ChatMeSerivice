@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons"
 import { faBars, faComment, faPhone ,faCircleNotch} from "@fortawesome/free-solid-svg-icons"
@@ -27,6 +27,11 @@ const Message = () => {
         }
         
     ]
+    useEffect(()=>{
+        return ()=>{
+            console.log("from message unmount ")
+        }
+    })
 
     return <>
         <div className={MessageCSS.base}>

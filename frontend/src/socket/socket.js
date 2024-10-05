@@ -1,41 +1,35 @@
-// socket.js
 import { io } from "socket.io-client";
-console.log("from socket");
 
-const socket = io("http://localhost:5000/", {
-    autoConnect: false,
-    reconnection: true,          // Auto-reconnect on failure
-    reconnectionAttempts: 10,     // Try 10 times before giving up
-    reconnectionDelay: 500,       // Wait 500ms before first reconnection attempt
-    reconnectionDelayMax: 2000,   // Max delay between reconnections
-});
+let socket;
 
-// Example: Define a custom event handler
-socket.on("connect", () => {
-    console.log("Connected to server with ID:", socket.id);
-    socket.auth="bharat jagoar"
-});
+const getSocket = () => {
+    if (!socket) {
+        // Create a new socket connection only if it doesn't already exist
+        socket = io("http://localhost:5000/", {
+            autoConnect: true,
+            reconnection: true,
+            reconnectionAttempts: 10,
+            reconnectionDelay: 500,
+            reconnectionDelayMax: 2000,
+        });
 
-socket.on("reconnect_attempt", (attempt) => {
-    console.log(`Attempting to reconnect: ${attempt}`);
-});
+        // Listen for connection events
+        socket.on("connect", () => {
+            console.log("Socket connected:", socket.id);
+        });
 
-// Handle reconnection success
-socket.on("reconnect", (attemptNumber) => {
-    console.log(`Reconnected after ${attemptNumber} attempts`);
-});
+        socket.on("disconnect", () => {
+            console.log("Socket disconnected:", socket.id);
+        });
 
-// Handle reconnection error/failure
-socket.on("reconnect_error", (error) => {
-    console.log("Reconnection failed:", error);
-});
-socket.on("message", (data) => {
-    console.log("Message from server:", data);
-});
+        socket.on("reconnect_attempt", (attempt) => {
+            console.log(`Reconnection attempt ${attempt}`);
+        });
+        socket.on("cust")
+    }
 
-// You can define more events and emitters here
-const sendMessage = (msg) => {
-    socket.emit("message", msg);
+    return socket;
 };
 
-export { socket};
+getSocket()
+export default getSocket;

@@ -1,11 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit'
 import instance from '../axios/axiosInstance'
+import getSocket from '../src/socket/socket'
+
+const socket = getSocket();
 async function LoginStatus(){
     console.log("hellow from Reducer")
-    
     try {
         const {data} = await instance.get("/test")
-        console.log(data,"fdafdsafdsafdsa")
+        console.log(data.user,"fdafdsafdsafdsa")
+        socket.emit("login",{userid:data.user})
         return data.data
     } catch (error) {
         console.log(error)

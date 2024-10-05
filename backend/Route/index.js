@@ -19,7 +19,7 @@ Router.post("/login", passport.authenticate("local"), (req, res) => {
     res.status(200).send({ mes: req.user.id })
 })
 Router.get("/test", (req, res) => {
-    console.log("from test", req.isAuthenticated(),req.user)
+    // console.log("from test", req.isAuthenticated(),req.user)
     
     res.status(200).send({message:"successful",data:req.isAuthenticated(),user:req?.user?.id})
 })

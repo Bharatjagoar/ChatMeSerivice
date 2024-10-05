@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import ContactsCss from "./Contacts.module.css"
-import {socket} from "../../../socket/socket"
+// import { socket } from "../../../socket/socket"
+import getSocket from '../../../socket/socket'
 import { motion } from "framer-motion"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAddressBook, faLariSign } from '@fortawesome/free-solid-svg-icons'
 import instance from "../../../../axios/axiosInstance"
+import EmptyChat from './RightChattingwindows/EmptyChat'
 import Displaypicture from '../../displayPicture/Displaypicture'
+import ChattingWindow from './RightChattingwindows/ChattingWindow'
+
 
 
 
@@ -26,19 +30,33 @@ const debounce = (func, delay) => {
 const Contacts = () => {
     const [Searchstring, setSearchstring] = useState();
     const [Chats, SetChats] = useState();
+    const [userData,setuserData] = useState();
     const [isanimate, setanimate] = useState(false);
-
-
-    const btnclicked = async () => {
-        setanimate(!isanimate)
-        socket.emit("hel",{good:"message"})
-        try {
-            const respo = await instance.get("/test")
-            console.log(respo)
-        } catch (error) {
-            console.log(error)
+    const [receiver,setreciever] = useState();
+    const socket = getSocket();
+    useEffect(()=>{
+        console.log("hellow from useEffect");
+        socket.on("hellofromUser",(data)=>{
+            console.log(data)
+        })
+        return ()=>{
+            console.log("from contact unmount")
+            socket.off("hellofromUser")
         }
+    },[])
+
+
+
+    function handleDivClick(data){
+        // console.log(data)
+        setuserData(data)
+        socket.emit("get_the_Reaceiver_id",data._id,(response)=>{
+            console.log(response,"from the respofdsafdsafdsafdsa")
+            setreciever(response.respo)
+        })
     }
+    
+
     const Search = async () => {
         console.log("inside the Function")
         try {
@@ -62,8 +80,9 @@ const Contacts = () => {
             console.log(error)
         }
     }, 1200)
-
-    const placeholder = `${<FontAwesomeIcon icon={faAddressBook} />}Search or start a new chat`
+    const logout = (e)=>{
+        console.log("hellow world ")
+    }
     return <div className={ContactsCss.ChatandMessage}>
         <motion.div className={ContactsCss.Contacts}>
             <h2>Chats</h2>
@@ -78,8 +97,9 @@ const Contacts = () => {
                 {
                     Chats ? Chats.map((item, key) => <motion.div
                         whileHover={{ backgroundColor: "rgb(56, 56, 56)" }}
-                        key={key}
+                        key={item._id}
                         className={ContactsCss.ChatsfromSearch}
+                        onClick={()=>{handleDivClick(item)}}
                     >
                         <span>{item.UserName}</span>
                     </motion.div>) : null
@@ -88,7 +108,7 @@ const Contacts = () => {
 
         </motion.div>
 
-        <div className={ContactsCss.mainchatscreens}>
+        {/* <div className={ContactsCss.mainchatscreens}>
             <div className={ContactsCss.Navbar}>
                 <div className={ContactsCss.dpContainer}>
                     <Displaypicture />
@@ -96,14 +116,20 @@ const Contacts = () => {
                         animate={{ y: isanimate ? -10 : 10 }}>
                         bharat
                     </motion.p>
-                    {/* <p>{isanimate?"typing....":null}</p> */}
+                    { <p>{isanimate?"typing....":null}</p> }
                 </div>
-
+                <button onClick={()=>{logoutBtn()}}>logout</button>
             </div>
             <div className={ContactsCss.scrollloader}>
+            
             </div>
             <button onClick={(e) => { btnclicked() }}>click</button>
-        </div>
+        </div> */}
+        {/* <ChattingWindow user={userData}/> */}
+        {
+            userData?<ChattingWindow user={userData} recieverId={receiver}/>:<EmptyChat/>
+        }
+        {/* <EmptyChat/> */}
     </div>
 }
 

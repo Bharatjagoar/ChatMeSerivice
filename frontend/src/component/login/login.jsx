@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import instance from "../../../axios/axiosInstance";
-import { socket } from '../../socket/socket';
+// import { socket } from '../../socket/socket';
+import getSocket from '../../socket/socket';
 import logo from "../../../images/logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
@@ -15,7 +16,7 @@ const Login = () => {
     const nav = useNavigate()
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
+    const socket = getSocket();
     const btnClicked = async () => {
         try {
             const {data} = await instance.post("/login", { username, password });
@@ -23,9 +24,13 @@ const Login = () => {
             
             dispatch(LoggedIn(true))
             dispatch(setUserId(data.mes))
-            socket.io.opts.query=data.mes
-            socket.connect()
-            nav("/Chatting")
+            let user = data.mes
+            socket.io.opts.query={user}
+            socket.io.opts.autoConnect=true
+            // socket.connect()
+            console.log(data.mes)
+            socket.emit("login",{userid:data.mes})
+            nav("/message")
         } catch (error) {
             console.log(error, "errr");
         }
