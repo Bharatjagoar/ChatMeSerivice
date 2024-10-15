@@ -1,6 +1,7 @@
 
 const mongo = require("mongoose");
 mongo.connect( process.env.MongodbURL + 'WhatsApp' );
+
   
 const connect = mongo.connection
 connect.on("error",function(err){console.log("error connecting to database !!",err)})

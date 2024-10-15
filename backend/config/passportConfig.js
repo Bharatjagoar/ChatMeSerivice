@@ -29,5 +29,5 @@ module.exports.initailizingPassport = (passport) => {
             done(error, false)
         }
     })
-    console.log("hello world from passport config")
+    console.log("hello world from passport config",process.env.redisKey)
 }

@@ -1,16 +1,30 @@
 const redis = require("redis")
 const client = redis.createClient({
-    url:"redis://localhost:6379",
+    url:process.env.redisURL,
+    socket: {
+        tls: true,
+        // rejectUnauthorized: false, // Use with caution; set to true in production
+    }
 })
 
 
+
+client.on("connect", () => {
+    console.log("Connecting to Upstash Redis...");
+});
+
+client.on("ready", () => {
+    console.log("Connected to Upstash Redis");
+});
+
+client.on("error", (error) => {
+    console.error("Error connecting to Redis:", error);
+});
+
+// Connect to Redis
 client.connect()
-.then(()=>{
-    console.log("connected Redis")
-})
-.catch((error)=>{
-    console.log("error in connecting to redis",error)
-})
+    .catch((error) => {
+        console.error("Redis connection error:", error);
+    });
 
-
-module.exports = client
+module.exports = client;
