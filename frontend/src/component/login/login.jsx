@@ -25,10 +25,11 @@ const Login = () => {
             dispatch(LoggedIn(true))
             dispatch(setUserId(data.mes))
             let user = data.mes
+            socket.userdata = {id:data.user}
             socket.io.opts.query={user}
             socket.io.opts.autoConnect=true
             // socket.connect()
-            console.log(data.mes)
+            console.log(data.mes,"this is data , messss")
             socket.emit("login",{userid:data.mes})
             nav("/message")
         } catch (error) {

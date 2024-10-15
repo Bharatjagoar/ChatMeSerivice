@@ -25,14 +25,18 @@
     flex-grow: 1;
     display: flex;
 }
-.scrollloader {
+.Displaychat {
     flex-grow: 1; /* Take up remaining height */
     width: 100%;
     background-color: grey;
     overflow-y: scroll;
     scrollbar-width: none; /* For Firefox */
     -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+    display: flex; /* Ensure flex is used */
+    flex-direction: column; /* Add this to stack messages vertically */
+    padding: 10px; /* Optional padding */
 }
+
 .dpContainer{
     height: 100%;
     display: flex;
@@ -87,4 +91,25 @@
     justify-content: center;
     align-items: center;
     margin-right: 10px;
+}
+.Message{
+    background-color: #25d366;
+    margin: 5px;
+    position: flex;
+    justify-content: end;
+    max-width: 50%;
+    padding: 10px;
+}
+.Message>p , .MyDiv>p{
+    color: black;
+}
+.MyDiv{
+    color: red;
+    background-color: yellow;
+    margin: 5px;
+    align-self: flex-end;
+
+    max-width: 50%;
+    /* position: absolute; */
+
 }

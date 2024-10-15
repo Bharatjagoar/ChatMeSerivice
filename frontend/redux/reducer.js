@@ -4,10 +4,11 @@ import getSocket from '../src/socket/socket'
 
 const socket = getSocket();
 async function LoginStatus(){
-    console.log("hellow from Reducer")
+    // console.log("hellow from Reducer")
     try {
         const {data} = await instance.get("/test")
         console.log(data.user,"fdafdsafdsafdsa")
+        socket.user = data.user
         socket.emit("login",{userid:data.user})
         return data.data
     } catch (error) {
