@@ -1,38 +1,48 @@
-import { createSlice } from '@reduxjs/toolkit'
-import instance from '../axios/axiosInstance'
-import getSocket from '../src/socket/socket'
+import { createSlice } from '@reduxjs/toolkit';
+import instance from '../axios/axiosInstance';
+import getSocket from '../src/socket/socket';
 
 const socket = getSocket();
-async function LoginStatus(){
-    // console.log("hellow from Reducer")
+
+// Helper function for checking login status
+async function LoginStatus() {
     try {
-        const {data} = await instance.get("/test")
-        console.log(data.user,"fdafdsafdsafdsa")
-        socket.user = data.user
-        socket.emit("login",{userid:data.user})
-        return data.data
+        const { data } = await instance.get("/test");
+        console.log(data.user, "fdafdsafdsafdsa");
+        socket.user = data.user;
+        socket.emit("login", { userid: data.user });
+        return data.data;
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        return false; // Return a default value in case of error
     }
 }
+
 const counterSlice = createSlice({
     name: 'WhatsApp',
     initialState: {
-        IsLogin: await LoginStatus(),
-        userId:null
+        IsLogin: null,  // Set initial state as null or a default value
+        userId: null
     },
     reducers: {
         LoggedIn: (state, action) => {
-            state.IsLogin = action.payload
+            state.IsLogin = action.payload;
         },
         Logout: (state, action) => {
-            state.IsLogin = action.payload
+            state.IsLogin = action.payload;
         },
-        setUserId:(state,action)=>{
-            state.userId=action.payload
+        setUserId: (state, action) => {
+            state.userId = action.payload;
         }
     },
-})
+});
 
-export const { LoggedIn , Logout, setUserId } = counterSlice.actions
-export default counterSlice.reducer
+export const { LoggedIn, Logout, setUserId } = counterSlice.actions;
+
+export const checkLoginStatus = (setfunction) => async (dispatch) => {
+    const isLoggedIn = await LoginStatus();
+    setfunction(false)
+    dispatch(LoggedIn(isLoggedIn));
+};
+
+export default counterSlice.reducer;

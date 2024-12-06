@@ -13,6 +13,8 @@ const path = require("path")
 const passport = require("passport")
 const passportConfig = require("./config/passportConfig")
 const mongodb = require("./config/mongoose")
+const createQueue = require("./Services/Messaages")
+const {Rabbit_MQ_connection} = require("./config/RabbitMQ")
 
 // console.log(process.env.keys)
 
@@ -84,8 +86,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 app.use("/", require("./Route/index"))
 // Start the server
-server.listen(port, () => {
+server.listen(port, async () => {
     console.log(`Server running on port ${port}`);
+    // await createQueue();
+    await Rabbit_MQ_connection();
 });
 
 // Export the io instance to use in other modules

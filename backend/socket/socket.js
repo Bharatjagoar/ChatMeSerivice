@@ -1,4 +1,5 @@
 const redis = require("../config/redis")
+const {getChannel} = require("../config/RabbitMQ")
 
 module.exports = async (socket, io) => {
     socket.on("clickme", (data) => {
@@ -59,7 +60,11 @@ module.exports = async (socket, io) => {
             const userid = data.userid
             const getSocketID = await redis.hGet(`socekt:${userid}`,"socket")
             console.log(getSocketID,"lllllllllllllllllllllllllllllll")
-            callback(getSocketID)
+            if (getSocketID){
+                callback(getSocketID)
+            }else{
+                callback(null)
+            }
         } catch (error) {
             console.log("erororororor",error)
         }
@@ -85,8 +90,15 @@ module.exports = async (socket, io) => {
     })
 
     socket.on("message_to", async (data) => {
-        console.log(data, "thi sis")
-        console.log(socket.user, "this is the output of socket user here ")
+        let date  = new Date().toString();
+        console.log(date, "thi sis")
+        console.log(socket.user,data, "this is the output of socket user here ")
+        let channel= await getChannel();
+
+        let message=data;
+        message.RecieverId = socket.user
+        await channel.publish("MessageExchange","Sendmessage",Buffer.from(JSON.stringify(message)))
+        
         let ids = data.RecieversocketId
         io.to(ids).emit("MessageRecieved", { data })
     })
@@ -102,6 +114,11 @@ module.exports = async (socket, io) => {
             console.log("Error in deleting the socket field:", error);
         }
     });
+
+    socket.on("typing",(data)=>{
+        console.log(data,socket.id,"the data")
+        io.to(data.userId).emit("types")
+    })
 
 }
 

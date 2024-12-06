@@ -25,6 +25,9 @@ const ChattingWindow = (user) => {
             setmessageRecieved(prev => [...prev, { Message: data.data.Message, userid: data.data.id, username: data.data.username }])
             console.log(data)
         })
+        socket.on("types", (data) => {
+            console.log("they are typeing")
+        })
         console.log(messageRecieved)
         return () => {
             socket.off("MessageRecieved")
@@ -51,16 +54,28 @@ const ChattingWindow = (user) => {
         let id = user.user._id
         let username = user.user.UserName
         console.log(user.user._id, "this is the user name i got")
+        if(Message=="" || Message==null ){}
         setmessageRecieved(prev => [...prev, { Message, userid: user.user._id, username: user.user.UserName }])
         socket.emit("getthesocketID-forMessage", { userid: user.user._id }, (response) => {
             console.log(response, "resp")
             socket.emit("message_to", { RecieversocketId: response, Message, username, id })
         })
-        setMessage("")
+        if(Message){
+            setMessage("")
+        }
+        user.removesearchresult("")
         // console.log(user.user._id)
 
     }
 
+    const inputchange = (e) => {
+        socket.emit("getthesocketID-forMessage", { userid: user.user._id }, (response) => {
+            console.log("repso", response)
+            response && socket.emit("typing", { Reciever_socketid: response, userID: user.user._id })
+            
+        })
+        setMessage(e.target.value)
+    }
 
     return <div className={ChattingWindowCSS.mainchatscreens}>
         <div className={ChattingWindowCSS.Navbar}>
@@ -75,8 +90,8 @@ const ChattingWindow = (user) => {
             <button onClick={() => { logoutBtn() }}>logout</button>
         </div>
         <div className={ChattingWindowCSS.Displaychat}>
-            fdsa
-            <div className={ChattingWindowCSS.Message}>
+            {/* fdsa */}
+            {/* <div className={ChattingWindowCSS.Message}>
                 <div className={ChattingWindowCSS.MyDiv}>
                     <h1>me</h1>
                 </div>
@@ -85,14 +100,14 @@ const ChattingWindow = (user) => {
                 <div>
                     <h1>Sender</h1>
                 </div>
-            </div>
+            </div> */}
             {
 
                 messageRecieved.map((message, index) => {
                     console.log(message.userid, user.user._id)
                     return <div key={index}
                         className={
-                            user.user._id == message.userid ? ChattingWindowCSS.Message : ChattingWindowCSS.MyDiv
+                            user.user._id == message.userid ? ChattingWindowCSS.MyDiv : ChattingWindowCSS.Message
                         }
                     >
                         <p>{message.username}</p>
@@ -104,13 +119,13 @@ const ChattingWindow = (user) => {
 
         </div>
         <div className={ChattingWindowCSS.SendMessageDiv}>
-            <input type="text" onChange={(e) => { setMessage(e.target.value) }}
-            value={Message}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                    btnclicked();  // Submit the message on pressing Enter
-                }
-            }} placeholder='type a message' />
+            <input type="text" onChange={(e) => { inputchange(e) }}
+                value={Message}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        btnclicked();  // Submit the message on pressing Enter
+                    }
+                }} placeholder='type a message' />
             <motion.div className={ChattingWindowCSS.SendBtn}
                 whileTap={{ scale: 0.9 }}
                 onClick={(e) => { btnclicked() }}

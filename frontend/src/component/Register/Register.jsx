@@ -105,10 +105,8 @@ const Register = () => {
                     placeholder="Confirm Password"
                     className={RegisterCss.userName}
                 />
-                <button onClick={btnclicked} className={RegisterCss.submitButton}>
-                    Submit
-                </button>
-                <button onClick={(e)=>{nav("/Chatting")}}>chatting</button>
+                <button onClick={btnclicked} className={RegisterCss.submitButton}>Submit</button>
+                <button onClick={(e)=>{nav("/message")}}>chatting</button>
             </div>
         </div>
     );

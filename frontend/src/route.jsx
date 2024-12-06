@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import getSocket from "./socket/socket.js";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import App from './App.jsx'; // Import the App component
@@ -8,12 +8,19 @@ import Register from "./component/Register/Register.jsx";
 import Login from "./component/login/login.jsx";
 import Home from "./component/Home/Home.jsx";
 import Message from "./component/message/mesage.jsx";
+import { checkLoginStatus } from "../redux/reducer.js";
+// import { useDispatch } from "react-redux";
 import { useDispatch, useSelector } from "react-redux"
+// import LoadingPage from "./loadingComponent.jsx";
 
 
 const Router = () => {
+    const dispatch = useDispatch()
     const socket = getSocket();
+    const [isloading,setisloading] = useState(true);
+
     useEffect(() => {
+        dispatch(checkLoginStatus(setisloading))
         console.log("from the Router component")
         socket.on("bharat", (data) => {
             console.log(data)
@@ -28,6 +35,11 @@ const Router = () => {
         return state.WhatsApp.IsLogin
     }
     )
+    if(isloading){
+        return <>
+            <h1>loading ..!!</h1>
+        </>
+    }
 
     return (
         <>

@@ -1,11 +1,12 @@
 const mongo = require("mongoose");
-mongo.connect( process.env.MongodbURL + 'WhatsApp' );
+mongo.connect( process.env.mongodbURL );
+
 
 
 const connect = mongo.connection
 connect.on("error",function(err){console.log("error connecting to database !!",err)})
 connect.once("open",function(){
-    console.log("successfully connected to the Database !!")
+    console.log("successfully connected to[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]] the Database !!")
 })
 
 module.exports=mongo

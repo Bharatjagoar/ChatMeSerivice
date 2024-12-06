@@ -1,0 +1,47 @@
+/* Dark Theme Styles for Loading Page */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #121212; /* Dark gray background */
+    color: #e0e0e0; /* Light gray text */
+  }
+  
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+  
+  .loading-logo img {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    filter: brightness(0) invert(1); /* Ensures logo matches dark theme */
+  }
+  
+  .loading-spinner .spinner {
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top: 4px solid #25d366; /* WhatsApp's green accent */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .loading-text {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    color: #e0e0e0;
+  }
+  

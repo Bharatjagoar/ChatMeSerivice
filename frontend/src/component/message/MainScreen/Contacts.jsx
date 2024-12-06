@@ -127,7 +127,7 @@ const Contacts = () => {
         </div> */}
         {/* <ChattingWindow user={userData}/> */}
         {
-            userData?<ChattingWindow user={userData} recieverId={receiver}/>:<EmptyChat/>
+            userData?<ChattingWindow user={userData} recieverId={receiver} removesearchresult = {SetChats}/>:<EmptyChat/>
         }
         {/* <EmptyChat/> */}
     </div>
