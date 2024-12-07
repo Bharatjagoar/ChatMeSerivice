@@ -22,6 +22,7 @@ const MessageSchema = new mongoose.Schema({
     }
 }, { timestamp: true })
 
+
 const messageModel = mongoose.model("Message", MessageSchema);
 
 

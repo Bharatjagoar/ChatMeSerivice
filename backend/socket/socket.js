@@ -90,11 +90,11 @@ module.exports = async (socket, io) => {
     })
 
     socket.on("message_to", async (data) => {
-        let date  = new Date().toString();
+        let date  = new Date()
         console.log(date, "thi sis")
         console.log(socket.user,data, "this is the output of socket user here ")
         let channel= await getChannel();
-
+        data.time = date
         let message=data;
         message.RecieverId = socket.user
         await channel.publish("MessageExchange","Sendmessage",Buffer.from(JSON.stringify(message)))

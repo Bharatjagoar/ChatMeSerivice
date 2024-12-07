@@ -1,6 +1,6 @@
 require('dotenv').config();
 const mongoose = require("./src/config/mongoose")
-const UserModel = require("./src/schema/messageSchema")
+// const UserModel = require("./src/schema/messageSchema")
 const MessageSent = require('./src/consumer/sendmessage')
 const {createChannel} = require("./src/config/RabbitMQ");
     (async () => {
