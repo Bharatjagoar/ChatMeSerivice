@@ -5,7 +5,7 @@ let channel
 
 async function Rabbit_MQ_connection() {
     console.log("hello from windowwls")
-    connection = await amqplib.connect("amqp://localhost");
+    connection = await amqplib.connect("amqp://127.0.0.1:5672");
     channel = await connection.createChannel();
     const Exchange = "MessageExchange";
     const routingKey = "Sendmessage";

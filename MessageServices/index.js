@@ -7,6 +7,7 @@ const {createChannel} = require("./src/config/RabbitMQ");
         try {
             console.log("hello from index.js from message services")
             await createChannel();
+            
             await MessageSent();
         } catch (error) {
             console.log(error)
