@@ -11,7 +11,6 @@ async function createChannel(){
 }
 
 async function getchannel(){
-    console.log("getting channel !!");
     if(!channel || !connection) await createChannel();
     return channel
 }

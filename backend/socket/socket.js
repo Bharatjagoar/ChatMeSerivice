@@ -76,7 +76,7 @@ module.exports = async (socket, io) => {
         console.log("hello from get reciever id", data)
         try {
             const checkSocketId = await redis.hGetAll(`socekt:${data}`)
-            console.log(checkSocketId.socket)
+            console.log(checkSocketId.socket,"response from redis socket")
             if (checkSocketId.socket) {
                 io.to(checkSocketId.socket).emit("hellofromUser", { mes: socket.id })
 
@@ -88,7 +88,7 @@ module.exports = async (socket, io) => {
             console.log(error)
         }
     })
-
+    
     socket.on("message_to", async (data) => {
         let date  = new Date()
         console.log(date, "thi sis")
@@ -97,8 +97,8 @@ module.exports = async (socket, io) => {
         data.time = date
         let message=data;
         message.RecieverId = socket.user
-        await channel.publish("MessageExchange","Sendmessage",Buffer.from(JSON.stringify(message)))
-        
+        // await channel.publish("MessageExchange","Sendmessage",Buffer.from(JSON.stringify(message)))
+        channel.sendToQueue("messageSent",Buffer.from(JSON.stringify(message)))
         let ids = data.RecieversocketId
         io.to(ids).emit("MessageRecieved", { data })
     })

@@ -3,9 +3,11 @@ const Userdb = require("../schema/userSchema")
 
 
 module.exports.initailizingPassport = (passport) => {
+    
     passport.use(new localStrategy(async (username, password, done) => {
         try {
-            const user = await Userdb.findOne({ UserName: username });
+            const user = await Userdb.findOne({ EmailId: username });
+            console.log("fda****************************",user,username,password);
             if (!user) return done(null, false, { message: "user not found" })
             if (user.Password != password) return done(null, false, { message: "Incorrect password" })
             data = {

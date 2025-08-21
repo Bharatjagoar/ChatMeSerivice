@@ -4,7 +4,7 @@ let connection
 let channel
 
 async function Rabbit_MQ_connection() {
-    console.log("hello from windowwls")
+    console.log("hello from RabbitMQ")
     connection = await amqplib.connect("amqp://127.0.0.1:5672");
     channel = await connection.createChannel();
     const Exchange = "MessageExchange";

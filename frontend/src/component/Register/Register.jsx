@@ -62,7 +62,7 @@ const Register = () => {
         }
 
         try {
-            const respo = await instance.post("/getrespo", {
+            const respo = await instance.post("/createUser", {
                 UserName: userName,
                 EmailId: email,
                 Password: password

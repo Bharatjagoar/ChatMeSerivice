@@ -11,7 +11,7 @@ async function LoginStatus() {
         console.log(data.user, "fdafdsafdsafdsa");
         socket.user = data.user;
         socket.emit("login", { userid: data.user });
-        return data.data;
+        return [data.data,data.user];
     } catch (error) {
         console.log(error);
         return false; // Return a default value in case of error
@@ -40,9 +40,11 @@ const counterSlice = createSlice({
 export const { LoggedIn, Logout, setUserId } = counterSlice.actions;
 
 export const checkLoginStatus = (setfunction) => async (dispatch) => {
-    const isLoggedIn = await LoginStatus();
+    const [isLoggedIn,dat] = await LoginStatus();
+    console.log(isLoggedIn,dat)
     setfunction(false)
     dispatch(LoggedIn(isLoggedIn));
+    dispatch(setUserId(dat))
 };
 
 export default counterSlice.reducer;

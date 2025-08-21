@@ -26,15 +26,37 @@
     display: flex;
 }
 .Displaychat {
-    flex-grow: 1; /* Take up remaining height */
+    flex-grow: 1;
     width: 100%;
-    background-color: grey;
+    background-image: url("./backgroundchat/whatappdark.jpg");
+    background-repeat: repeat;
+    background-size: contain;
     overflow-y: scroll;
-    scrollbar-width: none; /* For Firefox */
-    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
-    display: flex; /* Ensure flex is used */
-    flex-direction: column; /* Add this to stack messages vertically */
-    padding: 10px; /* Optional padding */
+
+    /* Scrollbar styling for Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: #888 transparent;
+
+    /* Scrollbar styling for WebKit browsers (Chrome, Edge, Safari) */
+    -ms-overflow-style: auto; /* IE 10+ */
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+/* WebKit scrollbar customization */
+.Displaychat::-webkit-scrollbar {
+    width: 6px;
+}
+
+.Displaychat::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.Displaychat::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+    border: none;
 }
 
 .dpContainer{
@@ -103,13 +125,21 @@
 .Message>p , .MyDiv>p{
     color: black;
 }
+
+.messagescontainer{
+    background-color: yellow;
+    padding: 200px;
+    position: relative;
+}
+
 .MyDiv{
     color: red;
     background-color: yellow;
-    margin: 5px;
-    align-self: flex-end;
+    width: 100%;
+}
 
-    max-width: 50%;
-    /* position: absolute; */
-
+.OtherDiv{
+    background-color: green;
+    color: yellow;
+    /* float: right; */
 }

@@ -42,7 +42,7 @@ module.exports.Searchstring = async(req,res)=>{
     
     console.log("hello world",req.body.search)
     try {
-        const data = await UserDB.find({UserName:{$regex:req.body.search}})
+        const data = await UserDB.find({UserName:{$regex:req.body.search,$options:"i"}})
         // console.log("this is res:::",data)
         if(data[0]){
             res.send({message:"successfull",data})

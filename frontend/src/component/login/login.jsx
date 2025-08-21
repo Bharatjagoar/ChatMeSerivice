@@ -18,6 +18,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const socket = getSocket();
     const btnClicked = async () => {
+        console.log(password,username)
         try {
             const {data} = await instance.post("/login", { username, password });
             console.log(data, "respo");
