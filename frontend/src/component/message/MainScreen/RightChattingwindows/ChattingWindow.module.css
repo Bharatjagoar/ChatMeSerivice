@@ -3,16 +3,21 @@
     color: rgb(255, 255, 255);
     min-width: 250px;
     width: 100%;
-    height: calc(100vh - 30px); /* This is fine */
+    height: calc(100vh - 30px);
+    /* This is fine */
     flex-grow: 45;
     flex-basis: 0;
     /* border: 2px green solid; */
     position: relative;
-    overflow-y: hidden; /* Keep this */
-    display: flex; /* Make sure to use flex */
-    flex-direction: column; /* Add this */
+    overflow-y: hidden;
+    /* Keep this */
+    display: flex;
+    /* Make sure to use flex */
+    flex-direction: column;
+    /* Add this */
 }
-.Navbar{
+
+.Navbar {
     /* background-color: yellow; */
     /* border: 2px solid yellow ; */
     max-height: 60px;
@@ -25,58 +30,63 @@
     flex-grow: 1;
     display: flex;
 }
+
 .Displaychat {
     flex-grow: 1;
     width: 100%;
     background-image: url("./backgroundchat/whatappdark.jpg");
     background-repeat: repeat;
     background-size: contain;
-    overflow-y: scroll;
+    overflow-y: auto;
+    /* ✅ Only this scrolls */
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
 
     /* Scrollbar styling for Firefox */
     scrollbar-width: thin;
     scrollbar-color: #888 transparent;
-
-    /* Scrollbar styling for WebKit browsers (Chrome, Edge, Safari) */
-    -ms-overflow-style: auto; /* IE 10+ */
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
+    /* Scrollbar styling for WebKit browsers */
+    -ms-overflow-style: auto;
 }
 
-/* WebKit scrollbar customization */
 .Displaychat::-webkit-scrollbar {
-    width: 6px;
+  width: 6px;
 }
 
 .Displaychat::-webkit-scrollbar-track {
-    background: transparent;
+  background: transparent;
 }
 
 .Displaychat::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 4px;
-    border: none;
+  background-color: #888;
+  border-radius: 4px;
+  border: none;
 }
 
-.dpContainer{
+
+.dpContainer {
     height: 100%;
     display: flex;
     align-items: center;
     /* margin-left: 10px; */
 }
-.dpContainer>p{
+
+.dpContainer>p {
     color: yellow;
     display: inline-block;
     position: relative;
-    padding-left: 10px;   
-    
+    padding-left: 10px;
+
 }
-.mainchatscreens>button ,.Navbar>button   {
+
+.mainchatscreens>button,
+.Navbar>button {
     width: 100px;
     padding: 10px;
     margin-top: 10px;
-    background-color: #25d366; /* WhatsApp green */
+    background-color: #25d366;
+    /* WhatsApp green */
     color: white;
     border: none;
     border-radius: 5px;
@@ -84,11 +94,13 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 .Navbar>button {
     position: relative;
     right: -20px;
 }
-.SendMessageDiv{
+
+.SendMessageDiv {
     width: 100%;
     display: flex;
     /* text-align: center; */
@@ -97,12 +109,14 @@
     align-items: center;
 
 }
-.SendMessageDiv >input{
+
+.SendMessageDiv>input {
     color: white;
     margin: 10px 10px;
     /* border: none; */
 }
-.SendBtn{
+
+.SendBtn {
     /* background-color: yellow; */
     background-color: #25d366;
     height: 35px;
@@ -114,7 +128,8 @@
     align-items: center;
     margin-right: 10px;
 }
-.Message{
+
+.Message {
     background-color: #25d366;
     margin: 5px;
     position: flex;
@@ -122,7 +137,9 @@
     max-width: 50%;
     padding: 10px;
 }
-.Message>p , .MyDiv>p{
+
+.Message>p,
+.MyDiv>p {
     color: black;
 }
 
@@ -130,51 +147,48 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 10px;
-  overflow-y: auto;
-  flex-grow: 1;
-  width: 100%;
+  width: 100%;  
 }
 
 /* Common bubble styling */
 .messageBubble {
-  max-width: 60%;
-  padding: 10px 14px;
-  border-radius: 8px;
-  position: relative;
-  font-size: 14px;
-  line-height: 1.4;
-  word-wrap: break-word;
-  display: flex;
-  flex-direction: column;
+    max-width: 60%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    position: relative;
+    font-size: 14px;
+    line-height: 1.4;
+    word-wrap: break-word;
+    display: flex;
+    flex-direction: column;
 }
 
 
 /* Your messages */
 .myMessage {
-  align-self: flex-end;
-  background-color: #dcf8c6;
-  color: black;
-  border-top-right-radius: 0;
+    align-self: flex-end;
+    background-color: #dcf8c6;
+    color: black;
+    border-top-right-radius: 0;
 }
 
 
 /* Received messages */
 .otherMessage {
-  align-self: flex-start;
-  background-color: #2a2f32;
-  color: white;
-  border-top-left-radius: 0;
+    align-self: flex-start;
+    background-color: #2a2f32;
+    color: white;
+    border-top-left-radius: 0;
 }
 
 /* Message text */
 .messageText {
-  margin-bottom: 4px;
+    margin-bottom: 4px;
 }
 
 /* Timestamp */
 .messageTime {
-  font-size: 11px;
-  color: rgba(0, 0, 0, 0.5);
-  align-self: flex-end;
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.5);
+    align-self: flex-end;
 }
