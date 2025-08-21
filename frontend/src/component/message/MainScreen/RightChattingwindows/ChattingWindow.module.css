@@ -6,7 +6,7 @@
     height: calc(100vh - 30px); /* This is fine */
     flex-grow: 45;
     flex-basis: 0;
-    border: 2px green solid;
+    /* border: 2px green solid; */
     position: relative;
     overflow-y: hidden; /* Keep this */
     display: flex; /* Make sure to use flex */
@@ -14,7 +14,7 @@
 }
 .Navbar{
     /* background-color: yellow; */
-    border: 2px solid ;
+    /* border: 2px solid yellow ; */
     max-height: 60px;
     min-height: 60px;
     position: relative;
@@ -126,20 +126,55 @@
     color: black;
 }
 
-.messagescontainer{
-    background-color: yellow;
-    padding: 200px;
-    position: relative;
+.messagescontainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  overflow-y: auto;
+  flex-grow: 1;
+  width: 100%;
 }
 
-.MyDiv{
-    color: red;
-    background-color: yellow;
-    width: 100%;
+/* Common bubble styling */
+.messageBubble {
+  max-width: 60%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  position: relative;
+  font-size: 14px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  display: flex;
+  flex-direction: column;
 }
 
-.OtherDiv{
-    background-color: green;
-    color: yellow;
-    /* float: right; */
+
+/* Your messages */
+.myMessage {
+  align-self: flex-end;
+  background-color: #dcf8c6;
+  color: black;
+  border-top-right-radius: 0;
+}
+
+
+/* Received messages */
+.otherMessage {
+  align-self: flex-start;
+  background-color: #2a2f32;
+  color: white;
+  border-top-left-radius: 0;
+}
+
+/* Message text */
+.messageText {
+  margin-bottom: 4px;
+}
+
+/* Timestamp */
+.messageTime {
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.5);
+  align-self: flex-end;
 }

@@ -16,7 +16,7 @@ const ChattingWindow = (user) => {
   let RecieversocketId;
   const socket = getSocket();
   const nav = useNavigate();
-  console.log("user :: ",user);
+  console.log("user :: ", user);
   let userdata = user.user;
   const [Message, setMessage] = useState();
   useEffect(() => {
@@ -27,34 +27,34 @@ const ChattingWindow = (user) => {
       try {
         const response = await instance.get(`/getMessages/${chatId}`);
         if (response?.data?.messages) {
-          setmessageRecieved(response.data.messages); // Populate initial messages
+          setmessageRecieved(response.data.messages);
         }
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
-
-      // Listen for new messages
-      socket.on("MessageRecieved", (data) => {
-        console.log("New message:", data);
-        setmessageRecieved((prev) => [
-          ...prev,
-          {
-            Message: data.data.Message,
-            userid: data.data.id,
-            username: data.data.username,
-            time:data.data.time
-          },
-        ]);
-      });
-
-      // Clean up on unmount
-      return () => {
-        socket.off("MessageRecieved");
-      };
     };
 
     fetchConversation();
-  }, [user.user]); // Runs whenever the user prop changes
+    const handleIncomingMessage = (data) => {
+      console.log("New message:", data);
+      setmessageRecieved((prev) => [
+        ...prev,
+        {
+          Message: data.data.Message,
+          userid: data.data.id,
+          username: data.data.username,
+          time: data.data.time,
+        },
+      ]);
+    };
+
+    socket.off("MessageRecieved");
+    socket.on("MessageRecieved", handleIncomingMessage);
+
+    return () => {
+      socket.off("MessageRecieved", handleIncomingMessage);
+    };
+  }, [user.user?._id]); // Only re-run if user ID changes
 
   console.log(user, "from the chatwindows component");
   // RecieversocketId = user.recieverId?user.recieverId:null
@@ -156,28 +156,22 @@ const ChattingWindow = (user) => {
                 </div>
             </div> */}
         {
-          <div className="messagescontainer">
+          <div className={ChattingWindowCSS.messagescontainer}>
             {messageRecieved.map((message, index) => {
-              console.log("from messange container",messageRecieved)
-              return <div
-                key={message._id || `${message.userid}-${index}`} // Use fallback key if `_id` isn't available
-                className={
-                  (message.userid == user.user._id) || (message.senderId == user.user._id)
-                    ? ChattingWindowCSS.MyDiv // Style for the user's own messages
-                    : ChattingWindowCSS.OtherDiv // Style for received messages
-                }
-              >
-                <div className="message-content">
-                  {message.message || message.Message || "No message content"}{" "}
-                  {/* Render message content */}
+              const isMine = message.userid === user.user._id || message.senderId === user.user._id;
+              return (
+                <div
+                  key={message._id || `${message.userid}-${index}`}
+                  className={`${ChattingWindowCSS.messageBubble} ${isMine ? ChattingWindowCSS.myMessage : ChattingWindowCSS.otherMessage}`}
+                >
+                  <div className={ChattingWindowCSS.messageText}>
+                    {message.message || message.Message || "No message content"}
+                  </div>
+                  <div className={ChattingWindowCSS.messageTime}>
+                    {message.time ? new Date(message.time).toLocaleTimeString() : "No time"}
+                  </div>
                 </div>
-                <div className="message-time">
-                  {message.time
-                    ? new Date(message.time).toLocaleTimeString()
-                    : "No time available"}{" "}
-                  {/* Render message time */}
-                </div>
-              </div>
+              );
             })}
           </div>
         }
