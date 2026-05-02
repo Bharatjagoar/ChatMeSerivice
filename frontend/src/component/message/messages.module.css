@@ -1,55 +1,116 @@
-.base{
-    padding: 3px;
+.base {
     height: 100vh;
     width: 100%;
-    background-color: rgb(32, 32, 32);
-    
+    background-color: #262525;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
-.Logo{
+
+
+/* ===== TOP LOGO ===== */
+.Logo {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: #099109;
     font-size: 1.2rem;
-    display: flex;
-    /* background-color: green; */
-    height: 24px;
+    font-weight: 500;
+    border-bottom: 1px solid #222e35;
+}
+
+.Logo svg {
+    font-size: 1.4rem;
+}
+
+.Logo p {
     margin-left: 10px;
+    color: #e9edef;
 }
-.Logo>p{
-    margin-left: 5px;
-    color: rgb(246, 246, 246);
-    font-size:1rem;
-    margin-left: 10px;
-}
-.Logo>svg{
-    /* color: red; */
-}
-.Maincontainer{
-    /* background-color: yellow; */
+
+/* ===== MAIN CONTAINER ===== */
+.Maincontainer {
     display: flex;
+    flex: 1;
+    overflow: hidden;
 }
-.leftMenu{
-    /* background-color: rgb(255, 0, 0); */
-    min-width: 50px;
-    height:  calc(100vh - 30px);
-    padding-top:1px;
+
+/* ===== ICON SIDEBAR ===== */
+.leftMenu {
+    width: 60px;
+    background-color: #262525;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 20px;
+    height: 100%;
 }
-.leftMenutop{
-    background-color: rebeccapurple;
-    width: 80%;
-    height: 30px;
-    /* margin: 5px auto; */
-    font-size: 1.3rem;
-    margin-top: 20px;
-    color: #fff;
+
+/* ===== ICON ITEM ===== */
+.leftMenutop {
+    width: 40px;
+    height: 40px;
+    margin: 15px 0;
+    border-radius: 12px;
     display: flex;
     justify-content: center;
     align-items: center;
+    color: #aebac1;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
-.chatsContainer{
-    /* background-color: #fff; */
-    width: 100vw;
+
+/* Hover */
+.leftMenutop:hover {
+    background-color: #3e3f3f;
+    color: #e9edef;
 }
-.leftMenutop > svg{
-    margin: 10px auto;
+
+/* Active Icon */
+.active {
+    background-color: #8c8e8f;
+    color: #00a884;
+}
+
+/* ===== CHAT SIDEBAR ===== */
+/* ===== CONTACTS SIDEBAR ===== */
+.chatsContainer {
+    width: 320px;
+    background-color: #111b21;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+
+/* open */
+.open {
+    width: 320px;
+}
+
+/* closed */
+.closed {
+    width: 0;
+}
+
+/* CHAT AREA SHOULD EXPAND */
+.chatArea {
+    flex: 1;
+    background-color: #262525;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+
+    .chatsContainer {
+        position: absolute;
+        z-index: 10;
+        height: 100%;
+    }
+
+    .open {
+        width: 280px;
+    }
+
+    .closed {
+        width: 0;
+    }
 }

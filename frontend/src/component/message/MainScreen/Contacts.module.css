@@ -1,55 +1,67 @@
-h1, p {
+h1,
+p {
     color: #ffffff;
 }
-.ChatandMessage{
-    /* background-color: lightcoral; */
+
+.ChatandMessage {
     background-color: rgb(44, 44, 44);
     border-top-left-radius: 5px;
     overflow: hidden;
     display: flex;
+    flex: 1;
+    /* fills remaining space after leftMenu */
+    height: 100%;
 }
-.Contacts{
-    /* background-color: darkgreen; */
+
+.Contacts {
     color: rgb(255, 255, 255);
-    min-width:250px;
-    height: calc(100vh - 30px);
-    /* flex-grow: 100;
-    flex-basis: 0; */
+    width: 300px;
+    min-width: 300px;
+    height: 100%;
     border-right: 2px rgb(32, 32, 32) solid;
-    /* margin-right:2px ; */
-    padding:5px 10px 5px;
+    padding: 5px 10px 5px;
+    overflow-y: auto;
 }
-.Contacts>h2{
+
+.Contacts>h2 {
     display: inline-block;
     padding: 10px;
     /* background-color: blue; */
 }
-.book{
+
+.book {
     margin: 11px;
     font-size: 1.3rem;
     float: right;
 }
+
 .mainchatscreens {
     background-color: rgb(44, 44, 44);
     color: rgb(255, 255, 255);
     min-width: 250px;
     width: 100%;
-    height: calc(100vh - 30px); /* This is fine */
+    height: calc(100vh - 30px);
+    /* This is fine */
     flex-grow: 45;
     flex-basis: 0;
     border: 2px green solid;
     position: relative;
-    overflow-y: hidden; /* Keep this */
-    display: flex; /* Make sure to use flex */
-    flex-direction: column; /* Add this */
+    overflow-y: hidden;
+    /* Keep this */
+    display: flex;
+    /* Make sure to use flex */
+    flex-direction: column;
+    /* Add this */
 }
-.Searcg{
+
+.Searcg {
     display: block;
     padding: 0px 5px;
     /* background-color: blue; */
     /* height: 30px; */
 }
-.Searcg>input{
+
+.Searcg>input {
     color: rgb(241, 241, 241);
     font-size: 1rem;
     border-radius: 5px;
@@ -59,23 +71,27 @@ h1, p {
     margin-bottom: 10px;
     height: 30px;
 }
-.Searcg>input::placeholder{
+
+.Searcg>input::placeholder {
     color: rgb(178, 178, 178);
-    font: size 0.8rem ;
+    font: size 0.8rem;
 }
-.ChatsfromSearch{
+
+.ChatsfromSearch {
     height: 60px;
     margin-bottom: 5px;
     border-radius: 5px;
     padding: 5px 10px;
 }
-.ChatsfromSearch>span{
+
+.ChatsfromSearch>span {
     font-weight: 700;
     font-size: 0.9rem;
 }
-.Navbar{
+
+.Navbar {
     /* background-color: yellow; */
-    border: 2px solid ;
+    border: 2px solid;
     max-height: 60px;
     min-height: 60px;
     position: relative;
@@ -86,32 +102,41 @@ h1, p {
     flex-grow: 1;
     display: flex;
 }
+
 .scrollloader {
-    flex-grow: 1; /* Take up remaining height */
+    flex-grow: 1;
+    /* Take up remaining height */
     width: 100%;
     background-color: grey;
     overflow-y: scroll;
-    scrollbar-width: none; /* For Firefox */
-    -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+    scrollbar-width: none;
+    /* For Firefox */
+    -ms-overflow-style: none;
+    /* For Internet Explorer and Edge */
 }
-.dpContainer{
+
+.dpContainer {
     height: 100%;
     display: flex;
     align-items: center;
     /* margin-left: 10px; */
 }
-.dpContainer>p{
+
+.dpContainer>p {
     color: yellow;
     display: inline-block;
     position: relative;
-    padding-left: 10px;   
-    
+    padding-left: 10px;
+
 }
-.mainchatscreens>button ,.Navbar>button   {
+
+.mainchatscreens>button,
+.Navbar>button {
     width: 100px;
     padding: 10px;
     margin-top: 10px;
-    background-color: #25d366; /* WhatsApp green */
+    background-color: #25d366;
+    /* WhatsApp green */
     color: white;
     border: none;
     border-radius: 5px;
@@ -119,6 +144,7 @@ h1, p {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 .Navbar>button {
     position: relative;
     right: -20px;

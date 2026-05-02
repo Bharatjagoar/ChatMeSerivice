@@ -1,57 +1,63 @@
 const UserDB = require("../schema/userSchema")
 
 
-module.exports.CreateUser = async (req,res) =>{
-    console.log("from controller of create user",req.body)
-    const {UserName} = req.body
+module.exports.CreateUser = async (req, res) => {
+    console.log("from controller of create user", req.body)
+    const { UserName } = req.body
     try {
-        const founduser = await UserDB.findOne({UserName:UserName})
-        if(founduser){
-            return res.status(200).send({message:"successfull",data:"found the user already"})
+        const foundUser = await UserDB.findOne({
+            $or: [
+                { UserName: UserName },
+                { EmailId: req.body.EmailId }
+            ]
+        });
+
+        if (foundUser) {
+            return res.status(200).send({ message: "successfull", data: "found the user already" })
         }
         const createdUser = await UserDB.create(req.body)
-        console.log(createdUser,"from created user")
-        res.status(200).send({message:"successful",data:createdUser})
+        console.log(createdUser, "from created user")
+        res.status(200).send({ message: "successful", data: createdUser })
     } catch (error) {
-        console.log("error from created user",error)
-        res.status(400).send({message:"unsuccessful",data:null})
+        console.log("error from created user", error)
+        res.status(400).send({ message: "unsuccessful", data: null })
     }
 }
 
-module.exports.checkUserName = async (req,res)=>{
+module.exports.checkUserName = async (req, res) => {
     try {
-        const {userName} = req.body
-        const userFound = await UserDB.findOne({UserName:userName})
-        console.log(userFound,"if user found or not")
+        const { userName } = req.body
+        const userFound = await UserDB.findOne({ UserName: userName })
+        console.log(userFound, "if user found or not")
         userFound
-        ?res.status(200).send({message:"succesfull",data:0})
-        :res.status(200).send({message:"succesfull",data:1})
+            ? res.status(200).send({ message: "succesfull", data: 0 })
+            : res.status(200).send({ message: "succesfull", data: 1 })
     } catch (error) {
         console.log(error)
-        res.status(400).send({message:"Failed",data:error})
+        res.status(400).send({ message: "Failed", data: error })
     }
     // res.status(200).send({message:"succesfull",data:null})
 }
 
-module.exports.login=(req,res)=>{
+module.exports.login = (req, res) => {
     console.log("hello world")
     res.send()
 }
 
-module.exports.Searchstring = async(req,res)=>{
-    
-    console.log("hello world",req.body.search)
+module.exports.Searchstring = async (req, res) => {
+
+    console.log("hello world", req.body.search)
     try {
-        const data = await UserDB.find({UserName:{$regex:req.body.search,$options:"i"}})
+        const data = await UserDB.find({ UserName: { $regex: req.body.search, $options: "i" } })
         // console.log("this is res:::",data)
-        if(data[0]){
-            res.send({message:"successfull",data})
-        }else{
-            res.send({message:"successfull",data:null})
+        if (data[0]) {
+            res.send({ message: "successfull", data })
+        } else {
+            res.send({ message: "successfull", data: null })
         }
-        
+
     } catch (error) {
         console.log(error)
     }
-    
+
 }

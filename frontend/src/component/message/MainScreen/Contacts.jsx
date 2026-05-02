@@ -23,7 +23,7 @@ const debounce = (func, delay) => {
   };
 };
 
-const Contacts = () => {
+const Contacts = ({ isChatOpen }) => {
   const [Searchstring, setSearchstring] = useState();
   const [Chats, SetChats] = useState();
   const [userData, setuserData] = useState();
@@ -48,7 +48,7 @@ const Contacts = () => {
         // console.log(UserId,receiver);
         // respo = await instance.get("/getMessages/" + chatid);
         // console.log(respo);
-      } catch (error) { 
+      } catch (error) {
         console.log(error);
       }
       console.log(data);
@@ -62,19 +62,19 @@ const Contacts = () => {
   }, []);
 
   async function handleDivClick(data) {
-    
-    console.log(data,UserId,"555555555555555555555555")
+
+    console.log(data, UserId, "555555555555555555555555")
     try {
       let chatid = [data._id, UserId].sort().join("_");
-      console.log(":Fdsa");
-      
+      console.log(":Fdsa", chatid);
+
       let respo = await instance.get("/getMessages/" + chatid);
       console.log(respo);
-    } catch (error) { 
+    } catch (error) {
       console.log(error);
     }
     setuserData(data);
-    
+
     socket.emit("get_the_Reaceiver_id", data._id, (response) => {
       console.log(response, "from the respofdsafdsafdsafdsa");
       setreciever(response.respo);
@@ -111,68 +111,47 @@ const Contacts = () => {
   };
   return (
     <div className={ContactsCss.ChatandMessage}>
-      <motion.div className={ContactsCss.Contacts}>
-        <h2>Chats</h2>
-        <FontAwesomeIcon className={ContactsCss.book} icon={faAddressBook} />
-        <div className={ContactsCss.Searcg}>
-          <input
-            type="text"
-            placeholder={"Search contacts and chat"}
-            onChange={(e) => {
-              searchStringChange(e);
-            }}
-          />
-        </div>
-        <div>
-          {Chats
-            ? Chats.map((item, key) => (
+
+      {/* LEFT PANEL — toggle based on prop */}
+      {isChatOpen && (
+        <motion.div className={ContactsCss.Contacts}>
+          <h2>Chats</h2>
+          <FontAwesomeIcon className={ContactsCss.book} icon={faAddressBook} />
+          <div className={ContactsCss.Searcg}>
+            <input
+              type="text"
+              placeholder={"Search contacts and chat"}
+              onChange={(e) => { searchStringChange(e); }}
+            />
+          </div>
+          <div>
+            {Chats
+              ? Chats.map((item, key) => (
                 <motion.div
                   whileHover={{ backgroundColor: "rgb(56, 56, 56)" }}
                   key={item._id}
                   className={ContactsCss.ChatsfromSearch}
-                  onClick={() => {
-                    handleDivClick(item);
-                  }}
+                  onClick={() => { handleDivClick(item); }}
                 >
-                  fdas<br></br>
+                  <br />
                   <span>{item.UserName}</span>
                 </motion.div>
               ))
-            : conversation?.map((item, key) => (
+              : conversation?.map((item, key) => (
                 <motion.div
                   whileHover={{ backgroundColor: "rgb(56, 56, 56)" }}
                   key={item._id}
                   className={ContactsCss.ChatsfromSearch}
-                  onClick={() => {
-                    handleDivClick(item?.participant);
-                  }}
+                  onClick={() => { handleDivClick(item?.participant); }}
                 >
-                  <span>
-                    {item.participant?.UserName}
-                  </span>
+                  <span>{item.participant?.UserName}</span>
                 </motion.div>
               ))}
-        </div>
-      </motion.div>
+          </div>
+        </motion.div>
+      )}
 
-      {/* <div className={ContactsCss.mainchatscreens}>
-            <div className={ContactsCss.Navbar}>
-                <div className={ContactsCss.dpContainer}>
-                    <Displaypicture />
-                    <motion.p
-                        animate={{ y: isanimate ? -10 : 10 }}>
-                        bharat
-                    </motion.p>
-                    { <p>{isanimate?"typing....":null}</p> }
-                </div>
-                <button onClick={()=>{logoutBtn()}}>logout</button>
-            </div>
-            <div className={ContactsCss.scrollloader}>
-            
-            </div>
-            <button onClick={(e) => { btnclicked() }}>click</button>
-        </div> */}
-      {/* <ChattingWindow user={userData}/> */}
+      {/* RIGHT PANEL — always visible */}
       {userData ? (
         <ChattingWindow
           user={userData}
@@ -183,7 +162,7 @@ const Contacts = () => {
       ) : (
         <EmptyChat />
       )}
-      {/* <EmptyChat/> */}
+
     </div>
   );
 };

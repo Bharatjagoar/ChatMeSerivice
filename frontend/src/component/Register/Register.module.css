@@ -1,90 +1,150 @@
-/* Main container to center the form and apply padding */
+/* ===== Main Container ===== */
 .mainContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    background-color: #f0f0f0; /* Light gray background */
+    min-height: 100vh; /* Better than height: 100vh */
+    padding: 20px;
+    background-color: rgb(32, 32, 32);
     font-family: Arial, sans-serif;
+    box-sizing: border-box;
 }
 
-/* Logo section */
+/* ===== Logo Section ===== */
 .logoDiv {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap; /* Prevent overflow on small screens */
+    text-align: center;
 }
-.logoDiv>h1{
-    color: rgb(24, 157, 14);
-    /* background-color: aqua; */
 
+.logoDiv > h1 {
+    color: #ddd;
+    margin-left: 10px;
+    font-size: 28px;
 }
-/* Styling the logo image */
+
+/* ===== Logo ===== */
 .logos {
-    width: 120px;
+    width: 110px;
     height: auto;
     object-fit: contain;
 }
 
-/* The form wrapper */
+/* ===== Form Container ===== */
 .registerationForm {
-    background-color: #fff;
-    padding: 20px;
+    background-color: rgb(44, 44, 44);
+    padding: 40px;
     border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for form */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
     width: 100%;
-    max-width: 400px; /* Limit the width on larger screens */
+    max-width: 400px;
     text-align: center;
+    box-sizing: border-box;
 }
 
-/* Styling for input fields */
+/* ===== Input Fields ===== */
 .userName {
-    width: 90%;
-    padding: 12px 15px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
+    background-color: transparent;
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border: 1px solid #555;
+    color: #ddd;
     border-radius: 5px;
     font-size: 16px;
-    box-shadow: inset 0 1px 20px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
     outline: none;
-    transition: border 0.3s ease;
-    color: black;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
 }
 
-/* Input field focus state */
+/* Focus State */
 .userName:focus {
-    border-color: #25d366; /* WhatsApp green on focus */
+    border-color: #25d366;
+    box-shadow: 0 0 5px #25d36666;
 }
 
-/* Styling for the button */
-.registerationForm>button {
+/* ===== Buttons ===== */
+.registerationForm > button {
     width: 100%;
-    padding: 12px 15px;
-    margin-top: 15px;
-    background-color: #25d366; /* WhatsApp green */
-    color: #fff;
+    padding: 12px;
+    margin-top: 12px;
+    background-color: #25d366;
+    color: white;
     border: none;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.1s ease;
     font-weight: bold;
 }
 
-/* Button hover state */
-.registerationForm>button:hover{
+/* Hover */
+.registerationForm > button:hover {
     background-color: #1ebe5c;
 }
 
-/* Responsive design for mobile */
-@media (max-width: 600px) {
+/* Active click effect */
+.registerationForm > button:active {
+    transform: scale(0.98);
+}
+
+/* ===== Tablet Responsive ===== */
+@media (max-width: 768px) {
+
     .registerationForm {
-        padding: 15px;
-        width: 90%;
+        padding: 30px;
+    }
+
+    .logoDiv > h1 {
+        font-size: 24px;
+        margin-left: 8px;
+    }
+
+    .logos {
+        width: 90px;
     }
 }
 
-input{
-    color: red;
+/* ===== Mobile Responsive ===== */
+@media (max-width: 480px) {
+
+    .mainContainer {
+        padding: 15px;
+        justify-content: flex-start;
+        padding-top: 60px;
+    }
+
+    .registerationForm {
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .logoDiv {
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .logoDiv > h1 {
+        margin-left: 0;
+        margin-top: 10px;
+        font-size: 22px;
+    }
+
+    .logos {
+        width: 80px;
+    }
+
+    .userName {
+        font-size: 15px;
+        padding: 10px;
+    }
+
+    .registerationForm > button {
+        font-size: 15px;
+        padding: 10px;
+    }
 }

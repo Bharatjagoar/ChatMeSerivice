@@ -35,7 +35,7 @@ module.exports.Readmessage = async (req, res) => {
         } else {
           participant = await Userdb.findById(element.participant[0]);
 
-          messageContent.resultArr[count].participant = participant;
+          messageContent.resultArr[count].participant = participant;  
           console.log(count, participant);
           resarr.push(messageContent.resultArr[count]);
           // console.log("No", req.params.id, element.participant[0]);
@@ -57,6 +57,7 @@ module.exports.ReadConvo = async (req, res) => {
   console.log("fromfad conrolldsafdsafdsafdaf");
   const channel = await getChannel();
   const correlationId = uuidv4();
+  console.log(req.params)
   let { ChatId } = req.params;
   await channel.assertQueue("ReadfromDBMessages", { durable: false });
   await channel.assertQueue("SendChatId", { durable: false });

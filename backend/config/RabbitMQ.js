@@ -3,19 +3,35 @@ const amqplib = require("amqplib")
 let connection
 let channel
 
-async function Rabbit_MQ_connection() {
-    console.log("hello from RabbitMQ")
-    connection = await amqplib.connect("amqp://127.0.0.1:5672");
-    channel = await connection.createChannel();
-    const Exchange = "MessageExchange";
-    const routingKey = "Sendmessage";
-    await channel.assertExchange(Exchange, "direct", { durable: false })
-    
-    // storing new message to database
-    await channel.assertQueue("message",{durable:false});
-    await channel.bindQueue("message",Exchange,routingKey)
-    
-    
+async function Rabbit_MQ_connection(retries = 5) {
+    console.log("hello from RabbitMQ");
+
+    try {
+        connection = await amqplib.connect("amqp://127.0.0.1:5672");
+        channel = await connection.createChannel();
+
+        const Exchange = "MessageExchange";
+        await channel.assertExchange(Exchange, "direct", { durable: true });
+
+        console.log("RabbitMQ connected ✅");
+
+        connection.on("error", (err) => {
+            console.error("RabbitMQ error:", err.message);
+        });
+
+        connection.on("close", () => {
+            console.warn("RabbitMQ closed, reconnecting...");
+            setTimeout(() => Rabbit_MQ_connection(), 5000);
+        });
+
+    } catch (err) {
+        if (retries > 0) {
+            console.log(`RabbitMQ not ready, retrying in 3s... (${retries} left)`);
+            await new Promise(res => setTimeout(res, 3000));
+            return Rabbit_MQ_connection(retries - 1);
+        }
+        console.error("RabbitMQ connection failed after all retries:", err.message);
+    }
 }
 
 
