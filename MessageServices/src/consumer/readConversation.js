@@ -1,6 +1,5 @@
 const { getchannel } = require("../config/RabbitMQ");
 const chatsDB = require("../../schema/chatschema");
-const mongoose = require("mongoose");
 
 async function ReadConversations() {
   const channel = await getchannel();
@@ -21,17 +20,9 @@ async function ReadConversations() {
       const resultArr = Convos.map((element) => {
         let obj = { ...element._doc };
 
-        if (id == element.participant[0].toString()) {
-          obj.unreadCount =
-            element.participant[0].toString() > element.participant[1].toString()
-              ? element.unreadCount.user2
-              : element.unreadCount.user1;
-        } else {
-          obj.unreadCount =
-            element.participant[0].toString() > element.participant[1].toString()
-              ? element.unreadCount.user1
-              : element.unreadCount.user2;
-        }
+        // Directly look up this user's unread count from the map
+        obj.unreadCount = element.unreadCount.get(id) || 0;
+
         return obj;
       });
 
@@ -46,7 +37,7 @@ async function ReadConversations() {
       channel.ack(mes);
     } catch (error) {
       console.error("Error in ReadConversations:", error);
-      channel.nack(mes, false, false); // discard bad messages
+      channel.nack(mes, false, false);
     }
   });
 }

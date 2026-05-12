@@ -7,58 +7,65 @@ import instance from "../../../../../axios/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { loadConversationMessages } from "../../../../../redux/chatslice";
 // import instance from "../../../../../axios/axiosInstance";
 // import { motion } from 'framer-motion'
 
 const ChattingWindow = (user) => {
   const [isanimate, setanimate] = useState(false);
-  const [messageRecieved, setmessageRecieved] = useState([]);
   let RecieversocketId;
+  const dispatch = useDispatch();
   const socket = getSocket();
   const nav = useNavigate();
-  console.log("user :: ", user);
   let userdata = user.user;
+  const currentLoggedinUser = useSelector((state)=>{
+    console.log(state);
+    return state.WhatsApp.userId;
+  });
   const [Message, setMessage] = useState();
-  useEffect(() => {
-    const fetchConversation = async () => {
-      if (!user.user) return;
+  const chatId = [user.user._id, user.senderId]
+    .sort()
+    .join("_");
+  const conversations = useSelector((state) => {
 
-      const chatId = [user.user._id, user.senderId].sort().join("_");
+    console.log(state.chat.conversations[chatId]?.messages);
+    return (
+      state.chat.conversations[chatId]?.messages || []
+    );
+  });
+  console.log("convo :: ",conversations);
+  useEffect(() => {
+
+    const fetchConversation = async () => {
+
+      if (!user.user) return;
+      console.log(user.user._id, user.senderId)
       try {
+
+        // const chatId = [user.user._id, user.senderId].sort().join("_");
+        console.log(user);
+
         const response = await instance.get(`/getMessages/${chatId}`);
+
         if (response?.data?.messages) {
-          setmessageRecieved(response.data.messages);
+          console.log(response.data.messages)
+          dispatch(
+            loadConversationMessages({ chatId, messages: response.data.messages })
+          );
         }
+
       } catch (error) {
         console.error("Error fetching messages:", error);
       }
     };
 
     fetchConversation();
-    const handleIncomingMessage = (data) => {
-      console.log("New message:", data);
-      setmessageRecieved((prev) => [
-        ...prev,
-        {
-          Message: data.data.Message,
-          userid: data.data.id,
-          username: data.data.username,
-          time: data.data.time,
-        },
-      ]);
-    };
 
-    socket.off("MessageRecieved");
-    socket.on("MessageRecieved", handleIncomingMessage);
-
-    return () => {
-      socket.off("MessageRecieved", handleIncomingMessage);
-    };
-  }, [user.user?._id]); // Only re-run if user ID changes
-
-  console.log(user, "from the chatwindows component");
+  }, [user.user?._id, user.senderId]);
+  // console.log(user, "from the chatwindows component");
   // RecieversocketId = user.recieverId?user.recieverId:null
-  console.log("Reciever__socketID :::", RecieversocketId);
+  // console.log("Reciever__socketID :::", RecieversocketId);
   // console.log(userdata.UserName, 99999999999999999999,socketId)
   const logoutBtn = async () => {
     try {
@@ -71,57 +78,24 @@ const ChattingWindow = (user) => {
   };
 
   const btnclicked = async () => {
-    console.log("hello world", user.user._id, user.user.UserName);
-
     let id = user.user._id;
     let username = user.user.UserName;
-
     if (!Message || Message.trim() === "") return;
 
-    const currentTime = new Date().toISOString(); // Current timestamp in ISO format
+    const currentTime = new Date().toISOString();
 
-    // Update the UI immediately with the new message
-    setmessageRecieved((prev) => [
-      ...prev,
-      {
-        Message, // Message text
-        userid: id, // Sender ID
-        username, // Sender username
-        time: currentTime, // Add timestamp
-      },
-    ]);
 
-    // Send the message to the server
-    socket.emit("getthesocketID-forMessage", { userid: id }, (response) => {
-      console.log(response, "resp");
-      socket.emit("message_to", {
-        RecieversocketId: response,
-        Message,
-        username,
-        id,
-      });
-    });
+    console.log(user)
+    let { senderId } = user;
+    socket.emit("getthesocketID-forMessage", { userid: id, Message, username, id, senderId });
 
-    // Clear the input field
     setMessage("");
 
-    // Additional cleanup (if required)
     user.removesearchresult("");
   };
 
   const inputchange = (e) => {
-    socket.emit(
-      "getthesocketID-forMessage",
-      { userid: user.user._id },
-      (response) => {
-        console.log("repso", response);
-        response &&
-          socket.emit("typing", {
-            Reciever_socketid: response,
-            userID: user.user._id,
-          });
-      }
-    );
+
     setMessage(e.target.value);
   };
 
@@ -157,8 +131,8 @@ const ChattingWindow = (user) => {
             </div> */}
         {
           <div className={ChattingWindowCSS.messagescontainer}>
-            {messageRecieved.map((message, index) => {
-              const isMine = message.userid === user.user._id || message.senderId === user.user._id;
+            {conversations.map((message, index) => {
+              const isMine = message.senderId === currentLoggedinUser;
               return (
                 <div
                   key={message._id || `${message.userid}-${index}`}

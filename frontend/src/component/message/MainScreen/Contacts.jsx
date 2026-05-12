@@ -32,51 +32,51 @@ const Contacts = ({ isChatOpen }) => {
   const [conversation, setconversation] = useState(null);
   const socket = getSocket();
   const UserId = useSelector((state) => state.WhatsApp.userId);
-  console.log(UserId);
+  const conversations = useSelector(
+    (state) => {
+      console.log(state.chat)
+      return state.chat.conversations}
+  );
+
+  console.log(conversations)
+  const MessageRecievedACK = (data) => {
+    console.log("message !", data);
+  }
 
   useEffect(() => {
     console.log("hellow from useEffect of contacts");
-    // console.log(UserId);
-    socket.on("hellofromUser", (data) => {
-      console.log(data);
-    });
+
     async function fetchConversation() {
       console.log("this is the user data", userData);
-      const { data } = await instance.get("/LoadConversation/" + UserId);
-      // let { resultArr } = data;
       try {
-        // console.log(UserId,receiver);
-        // respo = await instance.get("/getMessages/" + chatid);
-        // console.log(respo);
+        const { data } = await instance.get("/LoadConversation/" + UserId);
+        setconversation(data);
       } catch (error) {
         console.log(error);
       }
-      console.log(data);
-      setconversation(data);
     }
     fetchConversation();
     return () => {
       console.log("from contact unmount");
-      socket.off("hellofromUser");
     };
   }, []);
 
   async function handleDivClick(data) {
-
-    console.log(data, UserId, "555555555555555555555555")
+    console.log("fda",data)
     try {
       let chatid = [data._id, UserId].sort().join("_");
-      console.log(":Fdsa", chatid);
+
+      console.log(chatid);
 
       let respo = await instance.get("/getMessages/" + chatid);
       console.log(respo);
     } catch (error) {
       console.log(error);
     }
+    console.log(data);
     setuserData(data);
 
     socket.emit("get_the_Reaceiver_id", data._id, (response) => {
-      console.log(response, "from the respofdsafdsafdsafdsa");
       setreciever(response.respo);
     });
   }

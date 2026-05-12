@@ -9,7 +9,7 @@ async function createQueue() {
     const connection = await amqp.connect("amqp://localhost");
     channel = await connection.createChannel();
     await channel.assertExchange(Exchange, "direct", { durable: false });
-    await channel.assertQueue("messageSent", { durable: false });
+    await channel.assertQueue("messageSent", { durable: true });
     await channel.bindQueue("messageSent", Exchange, routingKey);
     const message = {
         name:"AAAAAAAAAAAAAAAAAAAAAAAAAAA",

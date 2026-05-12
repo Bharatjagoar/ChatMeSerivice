@@ -1,5 +1,5 @@
 const redis = require("../config/redis")
-const {getChannel} = require("../config/RabbitMQ")
+const { getChannel } = require("../config/RabbitMQ")
 
 module.exports = async (socket, io) => {
     socket.on("clickme", (data) => {
@@ -54,19 +54,28 @@ module.exports = async (socket, io) => {
         }
 
     })
-    socket.on("getthesocketID-forMessage",async (data,callback)=>{
-        console.log(data)
+    socket.on("getthesocketID-forMessage", async (data) => {
+        console.log("the data we are getting  :: ",data);
+        let channel = await getChannel();
         try {
             const userid = data.userid
-            const getSocketID = await redis.hGet(`socekt:${userid}`,"socket")
-            console.log(getSocketID,"lllllllllllllllllllllllllllllll")
-            if (getSocketID){
-                callback(getSocketID)
-            }else{
-                callback(null)
+            const getSocketID = await redis.hGet(`socekt:${userid}`, "socket")
+            console.log(getSocketID, "recievers socket id")
+            
+            let date = new Date()
+            data.time = date
+            let message = data;//if here status is true the its delivered or else it sent as status
+            if (getSocketID) {
+                
+                message.status =true;
+                let ids = getSocketID;
+                io.to(ids).emit("MessageRecieved", { data })
+            } else {
+                message.status =false;
             }
+            channel.sendToQueue("messageSent", Buffer.from(JSON.stringify(message)))
         } catch (error) {
-            console.log("erororororor",error)
+            console.log("error while getting recievers socket ID :-\n", error)
         }
     })
 
@@ -76,7 +85,7 @@ module.exports = async (socket, io) => {
         console.log("hello from get reciever id", data)
         try {
             const checkSocketId = await redis.hGetAll(`socekt:${data}`)
-            console.log(checkSocketId.socket,"response from redis socket")
+            console.log(checkSocketId.socket, "response from redis socket")
             if (checkSocketId.socket) {
                 io.to(checkSocketId.socket).emit("hellofromUser", { mes: socket.id })
 
@@ -88,22 +97,24 @@ module.exports = async (socket, io) => {
             console.log(error)
         }
     })
-    
+
     socket.on("message_to", async (data) => {
-        let date  = new Date()
+        let date = new Date()
         console.log(date, "thi sis")
-        console.log(socket.user,data, "this is the output of socket user here ")
-        let channel= await getChannel();
+        console.log(socket.user, data, "this is the output of socket user here ")
+        let channel = await getChannel();
         data.time = date
-        let message=data;
+        let message = data;
         message.RecieverId = socket.user
+        console.log(socket.user);
         // await channel.publish("MessageExchange","Sendmessage",Buffer.from(JSON.stringify(message)))
-        channel.sendToQueue("messageSent",Buffer.from(JSON.stringify(message)))
+        console.log(message);
+        channel.sendToQueue("messageSent", Buffer.from(JSON.stringify(message)))
         let ids = data.RecieversocketId
         io.to(ids).emit("MessageRecieved", { data })
     })
     socket.on("disconnect", async () => {
-        
+
         try {
             const user = socket.user; // Ensure this has the correct value
             console.log(`Trying to delete socket for user: ${user}`);
@@ -115,8 +126,8 @@ module.exports = async (socket, io) => {
         }
     });
 
-    socket.on("typing",(data)=>{
-        console.log(data,socket.id,"the data")
+    socket.on("typing", (data) => {
+        console.log(data, socket.id, "the data")
         io.to(data.userId).emit("types")
     })
 

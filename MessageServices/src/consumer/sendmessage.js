@@ -3,69 +3,69 @@ const messageDB = require("../../schema/messageSchema");
 const chatCollectionDB = require("../../schema/chatschema");
 
 async function MessageSent() {
-  console.log("from message sent ")
+  console.log("from message sent");
   const channel = await getchannel();
   await channel.assertQueue("messageSent", { durable: false });
 
   channel.consume("messageSent", async (message) => {
     if (!message) return;
-    console.log("Yes consuming !! ",message);
+
     let data;
     try {
       data = JSON.parse(message.content.toString());
       console.log("📩 Received message:", data);
     } catch (err) {
       console.error("❌ Failed to parse message:", err);
-      channel.nack(message, false, false); // drop bad message
+      channel.nack(message, false, false);
       return;
     }
 
     try {
-      const chatId = [data.RecieverId, data.id].sort().join("_");
+      const senderId = data.senderId;
+      const receiverId = data.id; // id = receiver
 
-      // Save the new message
+      const chatId = [senderId, receiverId].sort().join("_");
+
+      // Save the message
       const savedMessage = await messageDB.create({
         chatId,
         message: data.Message,
-        senderId: data.id,
-        recieverID: data.RecieverId,
+        senderId,
+        recieverID: receiverId,
         time: data.time,
       });
-      console.log("✅ Message saved to DB:", savedMessage);
+      console.log("✅ Message saved:", savedMessage);
 
-      // Update or create chat collection
       let chatDoc = await chatCollectionDB.findOne({ chatId });
 
       if (chatDoc) {
         console.log("🔄 Updating chat collection:", chatId);
-        if (data.RecieverId < data.id) {
-          chatDoc.unreadCount.user1 += 1;
-        } else {
-          chatDoc.unreadCount.user2 += 1;
-        }
+
+        // Increment unread count for the RECEIVER only
+        const currentCount = chatDoc.unreadCount.get(receiverId) || 0;
+        chatDoc.unreadCount.set(receiverId, currentCount + 1);
         chatDoc.Time = data.time;
         chatDoc.LastMessage = data.Message;
         await chatDoc.save();
+
       } else {
         console.log("🆕 Creating new chat collection:", chatId);
+
         const createCollection = await chatCollectionDB.create({
           chatId,
           LastMessage: data.Message,
-          participant: [data.id, data.RecieverId],
+          participant: [senderId, receiverId],
           Time: data.time,
+          unreadCount: { [receiverId]: 1 }, // receiver starts with 1 unread
         });
-        if (data.RecieverId < data.id) {
-          createCollection.unreadCount.user1 += 1;
-        } else {
-          createCollection.unreadCount.user2 += 1;
-        }
-        await createCollection.save();
+
+        console.log("✅ Chat collection created:", createCollection);
       }
 
       channel.ack(message);
     } catch (error) {
       console.error("❌ Error in MessageSent consumer:", error);
-      channel.nack(message, false, true); // requeue for retry
+      channel.nack(message, false, false);
     }
   });
 }
