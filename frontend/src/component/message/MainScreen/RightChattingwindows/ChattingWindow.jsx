@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ChattingWindowCSS from "./ChattingWindow.module.css";
 import Displaypicture from "../../../displayPicture/Displaypicture";
 import { motion } from "framer-motion";
@@ -19,10 +19,12 @@ const ChattingWindow = (user) => {
   const socket = getSocket();
   const nav = useNavigate();
   let userdata = user.user;
-  const currentLoggedinUser = useSelector((state)=>{
+  const currentLoggedinUser = useSelector((state) => {
     console.log(state);
     return state.WhatsApp.userId;
   });
+  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null)
   const [Message, setMessage] = useState();
   const chatId = [user.user._id, user.senderId]
     .sort()
@@ -34,7 +36,7 @@ const ChattingWindow = (user) => {
       state.chat.conversations[chatId]?.messages || []
     );
   });
-  console.log("convo :: ",conversations);
+  console.log("convo :: ", conversations);
   useEffect(() => {
 
     const fetchConversation = async () => {
@@ -63,6 +65,45 @@ const ChattingWindow = (user) => {
     fetchConversation();
 
   }, [user.user?._id, user.senderId]);
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+
+    const handleScroll = () => {
+      if (!container) return;
+
+      const isAtBottom =
+        container.scrollHeight - container.scrollTop <=
+        container.clientHeight + 50;
+
+      if (isAtBottom) {
+        setShowNewMessageBox(false);
+      }
+    };
+
+    container?.addEventListener("scroll", handleScroll);
+
+    return () => {
+      container?.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+
+    if (!container) return;
+
+    const isAtBottom =
+      container.scrollHeight - container.scrollTop <=
+      container.clientHeight + 50;
+
+    if (isAtBottom) {
+      messagesEndRef.current?.scrollIntoView({
+        behavior: "smooth",
+      });
+    } else {
+      setShowNewMessageBox(true);
+    }
+  }, [conversations]);
   // console.log(user, "from the chatwindows component");
   // RecieversocketId = user.recieverId?user.recieverId:null
   // console.log("Reciever__socketID :::", RecieversocketId);
@@ -85,9 +126,24 @@ const ChattingWindow = (user) => {
     const currentTime = new Date().toISOString();
 
 
-    console.log(user)
+    console.log(user);
+    const messageobj = {};
+    // const{senderId}
     let { senderId } = user;
-    socket.emit("getthesocketID-forMessage", { userid: id, Message, username, id, senderId });
+    let recieverID = id;
+    messageobj.senderId = senderId;
+    messageobj.recieverID = id;
+    messageobj.chatId = chatId;
+    messageobj.message = Message
+    socket.emit("getthesocketID-forMessage", { userid: id, Message, username, id, senderId }, async (data) => {
+      console.log("hellow from callback call ! ", data);
+      messageobj.time = data.time;
+      messageobj.status = data.status;
+      console.log(messageobj)
+      dispatch(
+        loadConversationMessages({ chatId, messages: [messageobj] })
+      );
+    });
 
     setMessage("");
 
@@ -130,7 +186,11 @@ const ChattingWindow = (user) => {
                 </div>
             </div> */}
         {
-          <div className={ChattingWindowCSS.messagescontainer}>
+          <div
+            className={ChattingWindowCSS.messagescontainer}
+            ref={messagesContainerRef}
+            onClick={() => setShowNewMessageBox(false)}
+          >
             {conversations.map((message, index) => {
               const isMine = message.senderId === currentLoggedinUser;
               return (
@@ -142,11 +202,18 @@ const ChattingWindow = (user) => {
                     {message.message || message.Message || "No message content"}
                   </div>
                   <div className={ChattingWindowCSS.messageTime}>
-                    {message.time ? new Date(message.time).toLocaleTimeString() : "No time"}
+                    {message.time
+                      ? new Date(message.time).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: false,
+                      })
+                      : "No time"}
                   </div>
                 </div>
               );
             })}
+            <div ref={messagesEndRef}></div>
           </div>
         }
       </div>

@@ -54,24 +54,28 @@ module.exports = async (socket, io) => {
         }
 
     })
-    socket.on("getthesocketID-forMessage", async (data) => {
-        console.log("the data we are getting  :: ",data);
+    socket.on("getthesocketID-forMessage", async (data, callback) => {
+        console.log("the data we are getting  :: ", data);
         let channel = await getChannel();
         try {
             const userid = data.userid
             const getSocketID = await redis.hGet(`socekt:${userid}`, "socket")
             console.log(getSocketID, "recievers socket id")
-            
+
             let date = new Date()
             data.time = date
             let message = data;//if here status is true the its delivered or else it sent as status
+            
             if (getSocketID) {
-                
-                message.status =true;
+                status = true;
+                message.status = "delivered";
                 let ids = getSocketID;
+                time = date;
+                callback({ time, status: "delivered" });
                 io.to(ids).emit("MessageRecieved", { data })
             } else {
-                message.status =false;
+                message.status = "delivered";
+                callback({ time, status: "sent" });
             }
             channel.sendToQueue("messageSent", Buffer.from(JSON.stringify(message)))
         } catch (error) {
