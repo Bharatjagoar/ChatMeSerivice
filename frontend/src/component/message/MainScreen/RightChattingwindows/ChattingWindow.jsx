@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
-import { loadConversationMessages } from "../../../../../redux/chatslice";
+import { loadConversationMessages,addOutgoingMessage } from "../../../../../redux/chatslice";
 // import instance from "../../../../../axios/axiosInstance";
 // import { motion } from 'framer-motion'
 
@@ -132,7 +132,7 @@ const ChattingWindow = (user) => {
     let { senderId } = user;
     let recieverID = id;
     messageobj.senderId = senderId;
-    messageobj.recieverID = id;
+    messageobj.receiverId = id;
     messageobj.chatId = chatId;
     messageobj.message = Message
     socket.emit("getthesocketID-forMessage", { userid: id, Message, username, id, senderId }, async (data) => {
@@ -141,7 +141,7 @@ const ChattingWindow = (user) => {
       messageobj.status = data.status;
       console.log(messageobj)
       dispatch(
-        loadConversationMessages({ chatId, messages: [messageobj] })
+        addOutgoingMessage(messageobj)
       );
     });
 

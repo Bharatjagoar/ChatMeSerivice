@@ -17,7 +17,7 @@ module.exports = async (socket, io) => {
     // socket.on("disconnect",async (data)=>{
     //     console.log("disconnected now",socket.id)
     //     try {
-    //         const res = await redis.del(`socekt:${userId}`);
+    //         const res = await redis.del(`socket:${userId}`);
     //         console.log(res);
     //     } catch (error) {
     //         console.log("error from redis scoket storage part ",error);
@@ -44,9 +44,9 @@ module.exports = async (socket, io) => {
         if (userId) {
             try {
                 socket.user = userId
-                const res = await redis.hSet(`socekt:${userId}`, "socket", socket.id);
+                const res = await redis.hSet(`socket:${userId}`, "socket", socket.id);
                 console.log(res, "from socket res this is the data from socket");
-                let res2 = await redis.hGetAll(`socekt:${userId}`)
+                let res2 = await redis.hGetAll(`socket:${userId}`)
                 console.log(res2.socket, "666656565656565656565656565")
             } catch (error) {
                 console.log("error from redis scoket storage part ", error);
@@ -59,7 +59,7 @@ module.exports = async (socket, io) => {
         let channel = await getChannel();
         try {
             const userid = data.userid
-            const getSocketID = await redis.hGet(`socekt:${userid}`, "socket")
+            const getSocketID = await redis.hGet(`socket:${userid}`, "socket")
             console.log(getSocketID, "recievers socket id")
 
             let date = new Date()
@@ -74,7 +74,8 @@ module.exports = async (socket, io) => {
                 callback({ time, status: "delivered" });
                 io.to(ids).emit("MessageRecieved", { data })
             } else {
-                message.status = "delivered";
+                time = date;
+                message.status = "sent";
                 callback({ time, status: "sent" });
             }
             channel.sendToQueue("messageSent", Buffer.from(JSON.stringify(message)))
@@ -88,13 +89,13 @@ module.exports = async (socket, io) => {
     socket.on("get_the_Reaceiver_id", async (data, callback) => {
         console.log("hello from get reciever id", data)
         try {
-            const checkSocketId = await redis.hGetAll(`socekt:${data}`)
+            const checkSocketId = await redis.hGetAll(`socket:${data}`)
             console.log(checkSocketId.socket, "response from redis socket")
             if (checkSocketId.socket) {
                 io.to(checkSocketId.socket).emit("hellofromUser", { mes: socket.id })
 
             }
-            console.log(checkSocketId, "thee socekt")
+            console.log(checkSocketId, "thee socket")
             checkSocketId.socket ? callback({ respo: checkSocketId.socket }) : null
         } catch (error) {
             console.log("hellow this is from get socket if of reciever")
@@ -118,11 +119,11 @@ module.exports = async (socket, io) => {
         io.to(ids).emit("MessageRecieved", { data })
     })
     socket.on("disconnect", async () => {
-
+        console.log("disconnected ! ");
         try {
             const user = socket.user; // Ensure this has the correct value
             console.log(`Trying to delete socket for user: ${user}`);
-            const deleting = await redis.hDel(`socekt:${user}`, "socket");
+            const deleting = await redis.hDel(`socket:${user}`, "socket");
             console.log(deleting ? 'Field deleted successfully' : 'Field deletion failed', deleting);
 
         } catch (error) {

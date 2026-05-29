@@ -33,6 +33,7 @@ async function MessageSent() {
         senderId,
         recieverID: receiverId,
         time: data.time,
+        status:data.status
       });
       console.log("✅ Message saved:", savedMessage);
 

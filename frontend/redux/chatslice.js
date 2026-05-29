@@ -52,7 +52,7 @@ const chatSlice = createSlice({
                 .join("_");
 
             initializeConversation(state, chatId);
-
+            console.log(state.conversations[chatId].messages)
             state.conversations[chatId].messages.push(message);
 
             state.conversations[chatId].messages =
@@ -72,13 +72,13 @@ const chatSlice = createSlice({
         addOutgoingMessage: (state, action) => {
 
             const message = action.payload;
-
+            console.log("hellow from ",action.payload)
             const chatId = [message.senderId, message.receiverId]
                 .sort()
                 .join("_");
 
             initializeConversation(state, chatId);
-
+            console.log(state.conversations[chatId].messages);
             state.conversations[chatId].messages.push(message);
 
             state.conversations[chatId].messages =
