@@ -33,7 +33,7 @@ async function MessageSent() {
         senderId,
         recieverID: receiverId,
         time: data.time,
-        status:data.status
+        status: data.status,
       });
       console.log("✅ Message saved:", savedMessage);
 
@@ -48,7 +48,6 @@ async function MessageSent() {
         chatDoc.Time = data.time;
         chatDoc.LastMessage = data.Message;
         await chatDoc.save();
-
       } else {
         console.log("🆕 Creating new chat collection:", chatId);
 
@@ -63,7 +62,9 @@ async function MessageSent() {
         console.log("✅ Chat collection created:", createCollection);
       }
 
+      console.log("Before ACK");
       channel.ack(message);
+      console.log("After ACK");
     } catch (error) {
       console.error("❌ Error in MessageSent consumer:", error);
       channel.nack(message, false, false);

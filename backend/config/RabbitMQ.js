@@ -8,7 +8,7 @@ async function Rabbit_MQ_connection(retries = 5) {
 
     try {
         connection = await amqplib.connect("amqp://127.0.0.1:5672");
-        channel = await connection.createChannel();
+        channel = await connection.createConfirmChannel();
 
         const Exchange = "MessageExchange";
         await channel.assertExchange(Exchange, "direct", { durable: true });

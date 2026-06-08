@@ -5,9 +5,12 @@ const MessageSent = require('./src/consumer/sendmessage')
 const {createChannel} = require("./src/config/RabbitMQ");
 const ReadConversations = require("./src/consumer/readConversation");
 const ReadConvo = require('./src/consumer/checkConvo');
+const MarkDelivery = require("./src/consumer/MarkDelivery");
+
     (async () => {
         try {
             console.log("hello from index.js from message services");
+            MarkDelivery()
             await createChannel();
             await MessageSent();
             await ReadConversations();
