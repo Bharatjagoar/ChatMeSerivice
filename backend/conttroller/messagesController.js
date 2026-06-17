@@ -6,7 +6,6 @@ const Userdb = require("../schema/userSchema");
 module.exports.Readmessage = async (req, res) => {
   const channel = await getChannel();
   const correlationId = uuidv4();
-  console.log(req.params, "hare krishna !!❤️❤️❤️❤️");
   await channel.assertQueue("ReadConvos", { durable: false });
   await channel.assertQueue("ResponseReadConvos", { durable: false });
   let reply = "ResponseReadConvos";
@@ -42,7 +41,6 @@ module.exports.Readmessage = async (req, res) => {
         }
         count++;
       }
-      console.log("this ifdsamkfdsankfdsmallfdmsalfdsa,lfds,al", resarr);
       res.send(resarr);
       channel.ack(Message);
       await channel.cancel(consumerTag.consumerTag);
@@ -54,7 +52,6 @@ module.exports.Readmessage = async (req, res) => {
 };
 
 module.exports.ReadConvo = async (req, res) => {
-  console.log("fromfad conrolldsafdsafdsafdaf");
   const channel = await getChannel();
   const correlationId = uuidv4();
   console.log(req.params)
@@ -69,10 +66,9 @@ module.exports.ReadConvo = async (req, res) => {
     replyTo: replyQueue
   });
   const consumerTag = await channel.consume(replyQueue, async (Message) => {
-    console.log("replyto of sent chat id", Message.properties.correlationId,correlationId);
     if (Message.properties.correlationId == correlationId) {
       const messageContent = JSON.parse(Message.content.toString());
-      console.log("message :: ", messageContent);
+      
       res.send(messageContent);
       channel.ack(Message);
       await channel.cancel(consumerTag.consumerTag);

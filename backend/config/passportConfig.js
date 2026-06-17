@@ -8,7 +8,6 @@ module.exports.initailizingPassport = (passport) => {
         console.log(username,password)
         try {
             const user = await Userdb.findOne({ EmailId: username });
-            console.log("fda****************************",user,username,password);
             if (!user) {
                 console.log("not found");
                 return done(null, false, { message: "user not found" })}
@@ -26,16 +25,6 @@ module.exports.initailizingPassport = (passport) => {
             return done(error, false)
         }
     }))
-    passport.serializeUser((user, done) => {
-        done(null, user.id)
-    })
-    passport.deserializeUser(async (id, done) => {
-        try {
-            const user = await Userdb.findById(id)
-            done(null, user)
-        } catch (error) {
-            done(error, false)
-        }
-    })
+    
     console.log("hello world from passport config",process.env.redisKey)
 }

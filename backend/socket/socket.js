@@ -3,6 +3,27 @@ const { getChannel } = require("../config/RabbitMQ");
 const { json } = require("body-parser");
 
 module.exports = async (socket, io) => {
+  try {
+    const userid = socket.handshake.query.user;
+    console.log("userid 😅😅:: ", socket.handshake.query.user);
+    console.log("query:", socket.handshake.query);
+    console.log("userid:", socket.handshake.query.user);
+    if (userid) {
+      socket.user = userid;
+      await redis.hSet(`socket:${userid}`, "socket", socket.id);
+      let res2 = await redis.hGetAll(`socket:${userid}`);
+      let channel = await getChannel();
+      channel.assertQueue("markdeliver", { durable: true });
+      channel.sendToQueue("markdeliver", Buffer.from(JSON.stringify(userid)), {
+        persistent: true,
+      });
+    } else {
+      console.log("no user ID");
+    }
+  } catch (error) {
+    console.log("error from socket section:: \n", error);
+  }
+
   socket.on("clickme", (data) => {
     console.log("hello world", socket.id);
     socket.emit("checkthis", { name: "bharat" });
@@ -10,20 +31,6 @@ module.exports = async (socket, io) => {
   socket.on("second", (data) => {
     console.log(data, socket.id);
   });
-  socket.on("newMessage", (data) => {
-    console.log(data);
-    socket.broadcast.emit("setNewMessaging", data.mesageString);
-  });
-
-  // socket.on("disconnect",async (data)=>{
-  //     console.log("disconnected now",socket.id)
-  //     try {
-  //         const res = await redis.del(`socket:${userId}`);
-  //         console.log(res);
-  //     } catch (error) {
-  //         console.log("error from redis scoket storage part ",error);
-  //     }
-  // })
 
   socket.on("custome_disconnect", (data) => {
     console.log("Logout write the logic here ");
@@ -36,28 +43,7 @@ module.exports = async (socket, io) => {
     // console.log(winodws)
     // io.to(winodws[1]).emit("bharat",{message:"this is for you !!"})
   });
-  socket.on("login", async (data) => {
-    console.log("datafrom socket login", data.userid);
-    let userId = data.userid;
 
-    console.log(userId, "this is userId");
-    if (userId) {
-      try {
-        socket.user = userId;
-        const res = await redis.hSet(`socket:${userId}`, "socket", socket.id);
-        let res2 = await redis.hGetAll(`socket:${userId}`);
-        let channel = await getChannel();
-        channel.assertQueue("markdeliver", { durable: true });
-        channel.sendToQueue(
-          "markdeliver",
-          Buffer.from(JSON.stringify(userId)),
-          { persistent: true },
-        );
-      } catch (error) {
-        console.log("error from redis scoket storage part ", error);
-      }
-    }
-  });
   socket.on("getthesocketID-forMessage", async (data, callback) => {
     console.log("the data we are getting  :: ", data);
 
@@ -107,7 +93,6 @@ module.exports = async (socket, io) => {
       if (checkSocketId.socket) {
         io.to(checkSocketId.socket).emit("hellofromUser", { mes: socket.id });
       }
-      console.log(checkSocketId, "thee socket");
       checkSocketId.socket ? callback({ respo: checkSocketId.socket }) : null;
     } catch (error) {
       console.log("hellow this is from get socket if of reciever");
@@ -115,33 +100,12 @@ module.exports = async (socket, io) => {
     }
   });
 
-  socket.on("message_to", async (data) => {
-    let date = new Date();
-    console.log(date, "thi sis");
-    console.log(socket.user, data, "this is the output of socket user here ");
-    let channel = await getChannel();
-    data.time = date;
-    let message = data;
-    message.RecieverId = socket.user;
-    console.log(socket.user);
-    // await channel.publish("MessageExchange","Sendmessage",Buffer.from(JSON.stringify(message)))
-    console.log(message);
-    channel.sendToQueue("messageSent", Buffer.from(JSON.stringify(message)));
-    let ids = data.RecieversocketId;
-    io.to(ids).emit("MessageRecieved", { data });
-  });
   socket.on("disconnect", async () => {
-    console.log("disconnected ! ");
-    try {
-      const user = socket.user; // Ensure this has the correct value
-      console.log(`Trying to delete socket for user: ${user}`);
-      const deleting = await redis.hDel(`socket:${user}`, "socket");
-      console.log(
-        deleting ? "Field deleted successfully" : "Field deletion failed",
-        deleting,
-      );
-    } catch (error) {
-      console.log("Error in deleting the socket field:", error);
+    const user = socket.user;
+    if (!user) return;
+    const current = await redis.hGet(`socket:${user}`, "socket");
+    if (current === socket.id) {
+      await redis.hDel(`socket:${user}`, "socket");
     }
   });
 

@@ -5,16 +5,16 @@ const http = require("http");
 // const bodyParser = require("body-parser");
 const socketio = require("socket.io");
 const bodyParser = require("body-parser")
-const expressSession = require("express-session")
-const MongoStore = require('connect-mongo');
 const cors = require('cors');
 const port = process.env.PORT || 5000;
+const cookieParser = require("cookie-parser");
 const path = require("path")
 const passport = require("passport")
 const passportConfig = require("./config/passportConfig")
 const mongodb = require("./config/mongoose")
 const createQueue = require("./Services/Messaages")
 const {Rabbit_MQ_connection} = require("./config/RabbitMQ")
+const verifyJWT = require("./middleware/verifyJWT")
 
 // console.log(process.env.keys)
 
@@ -26,23 +26,10 @@ app.use(cors({
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json())
-app.use(expressSession({
-    secret: "secret",
-    saveUninitialized: false,
-    resave: false,
-    store: MongoStore.create({
-        mongoUrl: process.env.MongodbURL,
-        collectionName: 'sessions'
-    }),
-    cookie: {
-        httpOnly: true,
-        secure: false,  // true in production with HTTPS
-        maxAge: 1000 * 24 * 60 * 60 // 24 hours
-    }
-}));
+
 passportConfig.initailizingPassport(passport)
 app.use(passport.initialize())
-app.use(passport.session())
+app.use(cookieParser());
 
 // Create the HTTP server and attach Socket.IO
 const server = http.createServer(app);
@@ -67,15 +54,8 @@ const io = socketio(server, {
 // const authusers = io.fe
 // Socket.IO connection handler
 io.on("connection", (socket) => {
-
-    console.log("Socket connection established", socket.id);
-    // console.log(socket.handshake)
-    // console.log("Socket connection established",socket.id);
-    // Emit a confirmation message to the client
+    console.log("NEW SOCKET CONNECTED", socket.id);
     require("./socket/socket")(socket,io)
-    // socket.on("clickme",()=>{
-    //     console.log("hedsafdfadaf")
-    // })
 });
 
 
@@ -85,6 +65,10 @@ if (process.env.NODE_ENV === 'production') {
         res.sendFile(path.join(__dirname, 'dist', 'index.html'));
     });
 }
+
+app.get("/me", verifyJWT, (req, res) => {
+    res.json({ userId: req.user.id });
+});
 app.use("/", require("./Route/index"))
 // Start the server
 server.listen(port, async () => {
