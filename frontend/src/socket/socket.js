@@ -6,7 +6,7 @@ const getSocket = () => {
     if (!socket) {
         // Create a new socket connection only if it doesn't already exist
         socket = io("http://localhost:5000/", {
-            autoConnect: true,
+            autoConnect: false,
             reconnection: true,
             reconnectionAttempts: 10,
             reconnectionDelay: 500,

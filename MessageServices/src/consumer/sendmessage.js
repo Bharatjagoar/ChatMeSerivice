@@ -1,10 +1,10 @@
-const { getchannel } = require("../config/RabbitMQ");
+const { getChannel } = require("../config/RabbitMQ");
 const messageDB = require("../../schema/messageSchema");
 const chatCollectionDB = require("../../schema/chatschema");
 
 async function MessageSent() {
   console.log("from message sent");
-  const channel = await getchannel();
+  const channel = await getChannel();
   await channel.assertQueue("messageSent", { durable: false });
 
   channel.consume("messageSent", async (message) => {

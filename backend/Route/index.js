@@ -22,28 +22,32 @@ Router.get("/getMessages/:ChatId", messagesController.ReadConvo);
 Router.get("/me", verifyJWT, (req, res) => {
   res.json({ userId: req.user.id });
 });
-Router.post("/login", passport.authenticate("local",{session:false}), (req, res) => {
-  const token = jwt.sign(
-    {
-      id: req.user.id,
-      email: req.user.emailid,
-    },
-    "secrate",
-    {
-      expiresIn: "7d",
-    },
-  );
-  res
-    .cookie("token", token, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: false, // true in production https
-    })
-    .status(200)
-    .json({
-      userId: req.user.id,
-    });
-});
+Router.post(
+  "/login",
+  passport.authenticate("local", { session: false }),
+  (req, res) => {
+    const token = jwt.sign(
+      {
+        id: req.user.id,
+        email: req.user.emailid,
+      },
+      "secrate",
+      {
+        expiresIn: "7d",
+      },
+    );
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false, // true in production https
+      })
+      .status(200)
+      .json({
+        userId: req.user.id,
+      });
+  },
+);
 
 Router.get("/test", (req, res) => {
   // console.log("from test", req.isAuthenticated(),req.user)
@@ -54,24 +58,29 @@ Router.get("/test", (req, res) => {
     user: req?.user?.id,
   });
 });
-Router.post("/logout", (req, res) => {
-  const userId = req.user?._id || req.user?.id; // grab before logOut clears it
+Router.post("/logout", verifyJWT, async (req, res) => {
+  const userId = req.user.id; // Safely extracted because of verifyJWT
 
-  req.logOut(async (err) => {
-    if (err)
-      return res
-        .status(400)
-        .send({ message: "Logged out failed", data: false });
-
-    try {
-      if (userId) {
-        await redis.del(`socket:${userId}`); // clean up redis
-      }
-    } catch (redisErr) {
-      console.log("Redis cleanup failed:", redisErr);
+  try {
+    if (userId) {
+      await redis.del(`socket:${userId}`);
     }
 
-    res.status(200).send({ message: "successfully logged out", data: false });
-  });
+    // Architectural requirement: Blacklist the token here.
+    // Store the current token in Redis with an expiration matching its remaining TTL.
+    // Update verifyJWT to reject tokens found in this Redis blacklist.
+  } catch (redisErr) {
+    console.error("Redis cleanup failed:", redisErr);
+    // Proceed to clear the cookie even if Redis fails, to ensure the client is logged out locally.
+  }
+
+  res
+    .clearCookie("token", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false, // Must be true in production
+    })
+    .status(200)
+    .send({ message: "Successfully logged out", data: false });
 });
 module.exports = Router;

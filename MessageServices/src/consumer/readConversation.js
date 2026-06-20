@@ -1,8 +1,8 @@
-const { getchannel } = require("../config/RabbitMQ");
+const { getChannel } = require("../config/RabbitMQ");
 const chatsDB = require("../../schema/chatschema");
 
 async function ReadConversations() {
-  const channel = await getchannel();
+  const channel = await getChannel();
   console.log("here inside the Read convo");
 
   await channel.assertQueue("ReadConvos", { durable: false });

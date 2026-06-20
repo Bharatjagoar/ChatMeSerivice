@@ -1,22 +1,18 @@
 const redis = require("../config/redis");
 const { getChannel } = require("../config/RabbitMQ");
 const { json } = require("body-parser");
+const processOfflineMessages = require("./processOfflineMessages")
 
 module.exports = async (socket, io) => {
   try {
     const userid = socket.handshake.query.user;
     console.log("userid 😅😅:: ", socket.handshake.query.user);
-    console.log("query:", socket.handshake.query);
-    console.log("userid:", socket.handshake.query.user);
     if (userid) {
       socket.user = userid;
       await redis.hSet(`socket:${userid}`, "socket", socket.id);
       let res2 = await redis.hGetAll(`socket:${userid}`);
       let channel = await getChannel();
-      channel.assertQueue("markdeliver", { durable: true });
-      channel.sendToQueue("markdeliver", Buffer.from(JSON.stringify(userid)), {
-        persistent: true,
-      });
+      await processOfflineMessages(userid,socket.id,io);
     } else {
       console.log("no user ID");
     }

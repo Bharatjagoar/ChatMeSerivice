@@ -31,6 +31,11 @@ const Router = () => {
       callback({ received: false }); // tell server it didn't land
     }
   };
+  const OfflineMessages = (data, callback) => {
+    //testing what i am getting in data
+    console.log("data from async :: ", data);
+    callback(true);
+  };
   useEffect(() => {
     dispatch(checkLoginStatus(setisloading));
     console.log("from the Router component");
@@ -40,10 +45,12 @@ const Router = () => {
         console.log("connection from router dom 😅😅😅😅😅");
         socket.off("MessageRecieved", MessageRecievedACK);
         socket.on("MessageRecieved", MessageRecievedACK);
+        socket.on("offlineMessages", OfflineMessages);
       });
     } else {
       socket.off("MessageRecieved", MessageRecievedACK);
       socket.on("MessageRecieved", MessageRecievedACK);
+      socket.off("offlineMessages", OfflineMessages);
     }
 
     return () => {

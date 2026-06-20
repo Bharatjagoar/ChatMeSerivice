@@ -1,8 +1,8 @@
-const { getchannel } = require("../config/RabbitMQ");
+const { getChannel } = require("../config/RabbitMQ");
 const messagedb = require("../../schema/messageSchema");
 
 async function ReadConvo() {
-  const channel = await getchannel();
+  const channel = await getChannel();
 
   await channel.assertQueue("SendChatId", { durable: false });
   await channel.assertQueue("ReadfromDBMessages", { durable: false });
