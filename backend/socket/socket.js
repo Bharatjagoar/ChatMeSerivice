@@ -81,21 +81,6 @@ module.exports = async (socket, io) => {
     }
   });
 
-  socket.on("get_the_Reaceiver_id", async (data, callback) => {
-    console.log("hello from get reciever id", data);
-    try {
-      const checkSocketId = await redis.hGetAll(`socket:${data}`);
-      console.log(checkSocketId.socket, "response from redis socket");
-      if (checkSocketId.socket) {
-        io.to(checkSocketId.socket).emit("hellofromUser", { mes: socket.id });
-      }
-      checkSocketId.socket ? callback({ respo: checkSocketId.socket }) : null;
-    } catch (error) {
-      console.log("hellow this is from get socket if of reciever");
-      console.log(error);
-    }
-  });
-
   socket.on("disconnect", async () => {
     const user = socket.user;
     if (!user) return;

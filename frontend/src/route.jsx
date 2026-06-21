@@ -19,7 +19,7 @@ const Router = () => {
   const socket = getSocket();
   const [isloading, setisloading] = useState(true);
   const MessageRecievedACK = (data, callback) => {
-    console.log("EVENT RECEIVED");
+    console.log("EVENT RECEIVED",data);
     try {
       dispatch(addIncomingMessage(data.data));
 
@@ -42,25 +42,26 @@ const Router = () => {
 
     if (!socket.connected) {
       socket.on("connect", () => {
-        console.log("connection from router dom 😅😅😅😅😅");
+        console.log("connection request from router dom 😅😅😅😅😅");
         socket.off("MessageRecieved", MessageRecievedACK);
         socket.on("MessageRecieved", MessageRecievedACK);
+        socket.off("offlineMessages", OfflineMessages);
         socket.on("offlineMessages", OfflineMessages);
       });
     } else {
       socket.off("MessageRecieved", MessageRecievedACK);
       socket.on("MessageRecieved", MessageRecievedACK);
       socket.off("offlineMessages", OfflineMessages);
+      socket.on("offlineMessages", OfflineMessages);
     }
 
     return () => {
-      console.log("from unmount");
       socket.off("MessageRecieved", MessageRecievedACK);
+      socket.off("offlineMessages", OfflineMessages);
     };
   }, [dispatch]);
 
   const isLogin = useSelector((state) => {
-    console.log(state);
     return state.WhatsApp.IsLogin;
   });
   if (isloading) {

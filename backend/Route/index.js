@@ -20,32 +20,27 @@ Router.get("/LoadConversation/:id", messagesController.Readmessage);
 Router.get("/getMessages/:ChatId", messagesController.ReadConvo);
 
 Router.get("/me", verifyJWT, (req, res) => {
-  res.json({ userId: req.user.id });
+  res.json({ userId: req.user.id, UserName: req.user.UserName });
 });
 Router.post(
   "/login",
   passport.authenticate("local", { session: false }),
   (req, res) => {
+    console.log("this is req.user :: ", req.user);
     const token = jwt.sign(
-      {
-        id: req.user.id,
-        email: req.user.emailid,
-      },
+      { id: req.user.id, email: req.user.emailid, UserName: req.user.UserName },
       "secrate",
-      {
-        expiresIn: "7d",
-      },
+      { expiresIn: "7d" },
     );
+
     res
       .cookie("token", token, {
         httpOnly: true,
         sameSite: "lax",
-        secure: false, // true in production https
+        secure: false,
       })
       .status(200)
-      .json({
-        userId: req.user.id,
-      });
+      .json({ userId: req.user.id, UserName: req.user.UserName });
   },
 );
 

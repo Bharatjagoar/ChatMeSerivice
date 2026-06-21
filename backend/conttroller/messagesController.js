@@ -3,77 +3,65 @@ const { getChannel } = require("../config/RabbitMQ");
 const { v4: uuidv4 } = require("uuid");
 const Userdb = require("../schema/userSchema");
 
+
 module.exports.Readmessage = async (req, res) => {
   const channel = await getChannel();
   const correlationId = uuidv4();
+
   await channel.assertQueue("ReadConvos", { durable: false });
-  await channel.assertQueue("ResponseReadConvos", { durable: false });
-  let reply = "ResponseReadConvos";
-  let message = { id: req.params.id };
-  channel.sendToQueue("ReadConvos", Buffer.from(JSON.stringify(message)), {
+  const q = await channel.assertQueue("", { exclusive: true, autoDelete: true });
+  const reply = q.queue;
+
+  channel.sendToQueue("ReadConvos", Buffer.from(JSON.stringify({ id: req.params.id })), {
     correlationId,
     replyTo: reply,
   });
+// consumerTag
+  const tag = await channel.consume(reply, async (Message) => {
+    if (Message.properties.correlationId !== correlationId) return;
 
-  let consumerTag = await channel.consume(reply, async (Message) => {
-    // console.log("dsa", Message.properties.correlationId, correlationId);
-    let count = 0;
-    if (Message.properties.correlationId == correlationId) {
-      const messageContent = JSON.parse(Message.content.toString());
-      let resarr = [];
-      for (let element of messageContent.resultArr) {
-        // console.log(messageContent.resultArr[0], "thfdskalkl");
-        let participant;
-        if (req.params.id == element.participant[0]) {
-          // console.log("yes", req.params.id);
-          participant = await Userdb.findById(element.participant[1]);
-          messageContent.resultArr[count].participant = participant;
-          console.log(count, participant);
-          resarr.push(messageContent.resultArr[count]);
-          // console.log(messageContent.resultArr);
-        } else {
-          participant = await Userdb.findById(element.participant[0]);
+    const { resultArr } = JSON.parse(Message.content.toString());
+    const resarr = [];
 
-          messageContent.resultArr[count].participant = participant;  
-          console.log(count, participant);
-          resarr.push(messageContent.resultArr[count]);
-          // console.log("No", req.params.id, element.participant[0]);
-        }
-        count++;
-      }
-      res.send(resarr);
-      channel.ack(Message);
-      await channel.cancel(consumerTag.consumerTag);
-    } else {
-      console.log("Nothing to send !!");
-      channel.ack(Message);
+    for (const element of resultArr) {
+      const participantId =
+        req.params.id === element.participant[0]
+          ? element.participant[1]
+          : element.participant[0];
+
+      const participant = await Userdb.findById(participantId);
+      resarr.push({ ...element, participant });
     }
+    console.log(resarr)
+    
+    res.send(resarr);
+    channel.ack(Message);
+    await channel.cancel(tag.consumerTag);
   });
 };
 
 module.exports.ReadConvo = async (req, res) => {
   const channel = await getChannel();
   const correlationId = uuidv4();
-  console.log(req.params)
+  console.log(req.params);
   let { ChatId } = req.params;
   await channel.assertQueue("ReadfromDBMessages", { durable: false });
   await channel.assertQueue("SendChatId", { durable: false });
   // console.log({ChatId:ChatId});
-  let obj={id:ChatId}
+  let obj = { id: ChatId };
   let replyQueue = "ReadfromDBMessages";
   channel.sendToQueue("SendChatId", Buffer.from(JSON.stringify(obj)), {
     correlationId: correlationId,
-    replyTo: replyQueue
+    replyTo: replyQueue,
   });
   const consumerTag = await channel.consume(replyQueue, async (Message) => {
     if (Message.properties.correlationId == correlationId) {
       const messageContent = JSON.parse(Message.content.toString());
-      
+
       res.send(messageContent);
       channel.ack(Message);
       await channel.cancel(consumerTag.consumerTag);
     }
   });
   // res.send("hellow  world");
-  
 };

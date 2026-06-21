@@ -46,7 +46,7 @@ const chatSlice = createSlice({
         addIncomingMessage: (state, action) => {
 
             const message = action.payload;
-
+            console.log("from addincoming :: ",action.payload)
             const chatId = [message.senderId, message.id]
                 .sort()
                 .join("_");
@@ -78,7 +78,9 @@ const chatSlice = createSlice({
                 .join("_");
 
             initializeConversation(state, chatId);
-            console.log(state.conversations[chatId].messages);
+            console.log("this is state messgae :", state.conversations[chatId].messages);
+            console.log("this is out going messgae :", message);
+            
             state.conversations[chatId].messages.push(message);
 
             state.conversations[chatId].messages =

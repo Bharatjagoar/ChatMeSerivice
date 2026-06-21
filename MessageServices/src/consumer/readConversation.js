@@ -12,7 +12,6 @@ async function ReadConversations() {
 
     try {
       const { id } = JSON.parse(mes.content.toString());
-      await channel.assertQueue(mes.properties.replyTo, { durable: false });
 
       console.log("hello world", id);
       const Convos = await chatsDB.find({ participant: id }).sort({ Time: -1 });

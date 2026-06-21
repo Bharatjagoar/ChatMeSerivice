@@ -21,10 +21,14 @@ const ChattingWindow = (user) => {
   const nav = useNavigate();
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
+  // const loggedin
 
   let userdata = user.user;
 
-  const currentLoggedinUser = useSelector((state) => state.WhatsApp.userId);
+  const currentLoggedinUser = useSelector((state) => {
+    console.log(state.WhatsApp);
+    return state.WhatsApp.userId});
+  const currentUsername = useSelector((state =>state.WhatsApp.userName))
 
   const chatId = [user.user._id, user.senderId].sort().join("_");
 
@@ -118,7 +122,7 @@ const ChattingWindow = (user) => {
     let id = user.user._id;
     let username = user.user.UserName;
     if (!Message || Message.trim() === "") return;
-
+    console.log("this is getting you username ::: ",username);
     const messageobj = {};
     let { senderId } = user;
     messageobj.senderId = senderId;
@@ -126,9 +130,11 @@ const ChattingWindow = (user) => {
     messageobj.chatId = chatId;
     messageobj.message = Message;
 
-    socket.emit("getthesocketID-forMessage", { userid: id, Message, username, id, senderId }, async (data) => {
+    socket.emit("getthesocketID-forMessage", { userid: id, Message, RecieverUsername:username, id, senderId,senderUsername :currentUsername }, async (data) => {
       messageobj.time = data.time;
       messageobj.status = data.status;
+      messageobj.senderUsername = currentUsername;
+      messageobj.receiverusername = username;
       dispatch(addOutgoingMessage(messageobj));
     });
 
@@ -159,6 +165,7 @@ const ChattingWindow = (user) => {
         >
           {conversations.map((message, index) => {
             const isMine = message.senderId === currentLoggedinUser;
+            console.log("senderId:", message.senderId, "currentUser:", currentLoggedinUser, "isMine:", isMine);
             return (
               <React.Fragment key={message._id || `${message.userid}-${index}`}>
                 
